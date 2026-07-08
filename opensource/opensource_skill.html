@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>顶级 AI Skill 开源项目排名 2026</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --accent2: #3fb950;
+      --accent3: #f78166;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --gold: #ffd700;
+      --silver: #c0c0c0;
+      --bronze: #cd7f32;
+      --tag-bg: #1f2937;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.6;
+      padding: 0 16px 60px;
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #0d1117 0%, #1a2332 50%, #0d1117 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 56px 0 40px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      background: linear-gradient(90deg, #58a6ff, #3fb950, #f78166);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+    .hero p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .hero .badge {
+      display: inline-block;
+      background: #1f2937;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 12px;
+    }
+
+    /* Container */
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    /* Summary Table */
+    .summary-section {
+      margin-top: 40px;
+    }
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 0.9rem;
+    }
+    thead tr { background: #1c2333; }
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    td { padding: 12px 16px; border-top: 1px solid var(--border); }
+    tr:hover td { background: #1c2333; }
+    .stars { color: var(--gold); font-weight: 700; }
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .rank-1 { background: var(--gold); color: #000; }
+    .rank-2 { background: var(--silver); color: #000; }
+    .rank-3 { background: var(--bronze); color: #000; }
+    .rank-n { background: var(--tag-bg); color: var(--text-muted); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .tag {
+      display: inline-block;
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Cards */
+    .cards { margin-top: 40px; display: grid; gap: 20px; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 28px;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+    .card:hover { border-color: var(--accent); }
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .card-rank {
+      font-size: 2rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .card-title-block { flex: 1; min-width: 0; }
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .card-url { font-size: 0.82rem; }
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 10px;
+    }
+    .meta-stars { color: var(--gold); }
+    .card-why {
+      background: rgba(88, 166, 255, 0.06);
+      border-left: 3px solid var(--accent);
+      padding: 10px 14px;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.88rem;
+      margin-bottom: 14px;
+      color: #cdd9e5;
+    }
+    .card-features { list-style: none; }
+    .card-features li {
+      padding: 5px 0;
+      font-size: 0.88rem;
+      display: flex;
+      gap: 8px;
+    }
+    .card-features li::before {
+      content: "›";
+      color: var(--accent2);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .card-for {
+      margin-top: 14px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+    .card-for strong { color: var(--accent); }
+
+    /* Methodology */
+    .method-section { margin-top: 48px; }
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .method-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .method-icon { font-size: 1.6rem; margin-bottom: 8px; }
+    .method-title { font-weight: 700; margin-bottom: 6px; color: var(--text); }
+    .method-body { font-size: 0.84rem; color: var(--text-muted); }
+
+    /* Token pyramid */
+    .pyramid-section { margin-top: 48px; }
+    .pyramid {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .pyramid-row {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+    }
+    .pyramid-row:nth-child(1) { width: 50%; border-color: var(--gold); }
+    .pyramid-row:nth-child(2) { width: 75%; border-color: var(--accent); }
+    .pyramid-row:nth-child(3) { width: 100%; border-color: var(--accent2); }
+    .pyramid-label { font-weight: 700; font-size: 0.9rem; }
+    .pyramid-tokens { color: var(--text-muted); font-size: 0.8rem; }
+    .pyramid-desc { font-size: 0.82rem; color: var(--text-muted); }
+
+    /* Selection guide */
+    .guide-section { margin-top: 48px; }
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .guide-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .guide-need {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .guide-pick {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .guide-emoji { font-size: 1.4rem; flex-shrink: 0; }
+
+    /* Footer */
+    footer {
+      margin-top: 60px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+    }
+
+    @media (max-width: 600px) {
+      .card-header { flex-direction: column; gap: 8px; }
+      .pyramid-row { flex-direction: column; gap: 4px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="container">
+    <h1>顶级 AI Skill 开源项目排名</h1>
+    <p>专家级搜索 · 真实 GitHub 数据 · 深度分析</p>
+    <div class="badge">📅 数据核查日期：2026-07-09 &nbsp;|&nbsp; 所有 Stars 均通过 GitHub 页面实时验证</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Summary Table -->
+  <section class="summary-section">
+    <div class="section-title">总览排名</div>
+    <table>
+      <thead>
+        <tr>
+          <th>排名</th>
+          <th>项目</th>
+          <th>Stars</th>
+          <th>定位</th>
+          <th>最新版本</th>
+          <th>链接</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="rank-badge rank-1">1</span></td>
+          <td><strong>obra/superpowers</strong></td>
+          <td class="stars">⭐ 250k</td>
+          <td><span class="tag">Framework</span></td>
+          <td>v6.1.1</td>
+          <td><a href="https://github.com/obra/superpowers" target="_blank">GitHub →</a></td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge rank-2">2</span></td>
+          <td><strong>mattpocock/skills</strong></td>
+          <td class="stars">⭐ 161k</td>
+          <td><span class="tag">Library</span></td>
+          <td>v1.1.0</td>
+          <td><a href="https://github.com/mattpocock/skills" target="_blank">GitHub →</a></td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge rank-3">3</span></td>
+          <td><strong>anthropics/claude-code</strong></td>
+          <td class="stars">⭐ 137k</td>
+          <td><span class="tag">CLI+Skills</span></td>
+          <td>latest</td>
+          <td><a href="https://github.com/anthropics/claude-code" target="_blank">GitHub →</a></td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge rank-n">4</span></td>
+          <td><strong>addyosmani/agent-skills</strong></td>
+          <td class="stars">⭐ 74k</td>
+          <td><span class="tag">Production</span></td>
+          <td>v0.6.3</td>
+          <td><a href="https://github.com/addyosmani/agent-skills" target="_blank">GitHub →</a></td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge rank-n">5</span></td>
+          <td><strong>PatrickJS/awesome-cursorrules</strong></td>
+          <td class="stars">⭐ 40.3k</td>
+          <td><span class="tag">Collection</span></td>
+          <td>—</td>
+          <td><a href="https://github.com/PatrickJS/awesome-cursorrules" target="_blank">GitHub →</a></td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge rank-n">6</span></td>
+          <td><strong>agentskills/agentskills</strong></td>
+          <td class="stars">⭐ 22.7k</td>
+          <td><span class="tag">Spec/Standard</span></td>
+          <td>—</td>
+          <td><a href="https://github.com/agentskills/agentskills" target="_blank">GitHub →</a></td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge rank-n">7</span></td>
+          <td><strong>anthropics/claude-code-action</strong></td>
+          <td class="stars">⭐ 8.3k</td>
+          <td><span class="tag">CI/CD</span></td>
+          <td>v1.0</td>
+          <td><a href="https://github.com/anthropics/claude-code-action" target="_blank">GitHub →</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Cards -->
+  <section class="cards">
+
+    <!-- #1 obra/superpowers -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-rank">🥇</div>
+        <div class="card-title-block">
+          <div class="card-title">obra/superpowers</div>
+          <div class="card-url"><a href="https://github.com/obra/superpowers" target="_blank">https://github.com/obra/superpowers</a></div>
+        </div>
+      </div>
+      <div class="card-meta">
+        <div class="meta-item meta-stars">⭐ 250,000 Stars</div>
+        <div class="meta-item">🍴 22.2k Forks</div>
+        <div class="meta-item">🏷️ v6.1.1 (2026-07-02)</div>
+        <div class="meta-item">📜 MIT License</div>
+      </div>
+      <div class="card-why">
+        Stars 最多（250k），被 Anthropic 官方 Plugin Marketplace 推广，兼容所有主流 Agent 工具（Claude Code、Cursor、Codex 等），是 AI Skills 生态的顶级框架，活跃维护中（628 commits，v6.1.1）。
+      </div>
+      <ul class="card-features">
+        <li>结构化工作流：需求讨论 → 规划 → 实现 → 测试 → 合并 全链路覆盖</li>
+        <li>子 Agent 驱动开发（Subagent-Driven Development）：多 Agent 并行协作</li>
+        <li>强制 TDD 循环（RED-GREEN-REFACTOR），无法跳过</li>
+        <li>Git worktree 隔离：每个 feature branch 在独立环境运行</li>
+        <li>技能自动触发：Agent 在每次任务前强制检查相关技能</li>
+        <li>技能库：调试、规划、代码审查、协作、meta-workflow 等多类型</li>
+        <li>跨平台通用：一套技能在 Claude Code/Cursor/Codex 间通用</li>
+      </ul>
+      <div class="card-for"><strong>适用：</strong>需要跨工具通用规范、追求系统化开发方法论的个人/团队</div>
+    </div>
+
+    <!-- #2 mattpocock/skills -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-rank">🥈</div>
+        <div class="card-title-block">
+          <div class="card-title">mattpocock/skills</div>
+          <div class="card-url"><a href="https://github.com/mattpocock/skills" target="_blank">https://github.com/mattpocock/skills</a></div>
+        </div>
+      </div>
+      <div class="card-meta">
+        <div class="meta-item meta-stars">⭐ 161,000 Stars</div>
+        <div class="meta-item">🍴 13.9k Forks</div>
+        <div class="meta-item">🏷️ v1.1.0 (2026-07-08)</div>
+        <div class="meta-item">📜 MIT License</div>
+      </div>
+      <div class="card-why">
+        161k stars，增长曲线陡峭。TypeScript 社区知名工程师 Matt Pocock 出品，专注解决 AI 辅助开发的真实痛点，强调工程纪律而非"vibe coding"。安装极简。
+      </div>
+      <ul class="card-features">
+        <li><code>/grill-with-docs</code>：对话驱动需求对齐 + 构建共同领域语言</li>
+        <li><code>/tdd</code>：强制 red-green-refactor 测试驱动开发循环</li>
+        <li><code>/diagnosing-bugs</code>：复现 → 最小化 → 假设 → 修复 → 回归测试</li>
+        <li><code>/improve-codebase-architecture</code>：扫描设计缺陷，生成 HTML 报告</li>
+        <li><code>/to-spec</code> / <code>/to-tickets</code>：将对话转化为规格说明或任务票</li>
+        <li><code>/wayfinder</code>：将大型多会话工作规划为调查票据序列</li>
+        <li>安装：<code>npx skills@latest add mattpocock/skills</code></li>
+      </ul>
+      <div class="card-for"><strong>适用：</strong>高频使用 AI 编码 Agent 的工程师，希望标准化团队工作流</div>
+    </div>
+
+    <!-- #3 anthropics/claude-code -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-rank">🥉</div>
+        <div class="card-title-block">
+          <div class="card-title">anthropics/claude-code</div>
+          <div class="card-url"><a href="https://github.com/anthropics/claude-code" target="_blank">https://github.com/anthropics/claude-code</a></div>
+        </div>
+      </div>
+      <div class="card-meta">
+        <div class="meta-item meta-stars">⭐ 137,000 Stars</div>
+        <div class="meta-item">🍴 22k Forks</div>
+        <div class="meta-item">🏷️ 持续迭代</div>
+        <div class="meta-item">📜 MIT License</div>
+      </div>
+      <div class="card-why">
+        Anthropic 官方出品，整个 AI Skills 生态的基础设施。Claude Code 内建完整 Skills 架构，包含 Plugin Marketplace（官方认证的第三方技能市场）和 Hooks 系统。
+      </div>
+      <ul class="card-features">
+        <li>内建技能触发系统：Agent 自动匹配并加载相关技能</li>
+        <li>Plugin Marketplace：官方认证的第三方技能市场</li>
+        <li>Hooks 系统：Pre/Post 工具调用钩子，实现自动化行为</li>
+        <li>MCP（Model Context Protocol）原生支持</li>
+        <li>跨平台：Terminal CLI / IDE 扩展 / GitHub Actions / 桌面应用</li>
+        <li>支持 Claude Opus 4.7 / Sonnet 4.6 / Haiku 4.5</li>
+        <li>多云后端：Anthropic API / AWS Bedrock / Google Vertex AI</li>
+      </ul>
+      <div class="card-for"><strong>适用：</strong>所有使用 Claude 进行 AI 辅助开发的用户，Skills 生态的必备基础</div>
+    </div>
+
+    <!-- #4 addyosmani/agent-skills -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-rank">4️⃣</div>
+        <div class="card-title-block">
+          <div class="card-title">addyosmani/agent-skills</div>
+          <div class="card-url"><a href="https://github.com/addyosmani/agent-skills" target="_blank">https://github.com/addyosmani/agent-skills</a></div>
+        </div>
+      </div>
+      <div class="card-meta">
+        <div class="meta-item meta-stars">⭐ 74,000 Stars</div>
+        <div class="meta-item">🍴 8k Forks</div>
+        <div class="meta-item">🏷️ v0.6.3 (2026-07-03)</div>
+        <div class="meta-item">🔄 40 Contributors</div>
+      </div>
+      <div class="card-why">
+        Google Chrome 团队 Addy Osmani 出品，覆盖软件开发生命周期 6 大阶段，24 个技能，兼容 70+ Agent 工具（Claude Code、Cursor、Codex、Copilot、Gemini CLI 等）。
+      </div>
+      <ul class="card-features">
+        <li><strong>24 个技能</strong>按 6 阶段组织：Define / Plan / Build / Verify / Review / Ship</li>
+        <li><strong>8 个斜杠命令</strong>：<code>/spec /plan /build /test /review /webperf /code-simplify /ship</code></li>
+        <li><strong>4 种专家角色</strong>：代码审查员、测试工程师、安全审计员、性能审计员</li>
+        <li>参考清单：安全、性能、可访问性、可观测性</li>
+        <li>反合理化表：防止 Agent 跳过关键步骤</li>
+        <li>专项 Web 性能技能（<code>/webperf</code>），Addy 深厚背景加持</li>
+        <li>兼容性最广：70+ Agent 工具均可使用</li>
+      </ul>
+      <div class="card-for"><strong>适用：</strong>需要全流程编码辅助、追求高质量输出的专业开发者</div>
+    </div>
+
+    <!-- #5 PatrickJS/awesome-cursorrules -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-rank">5️⃣</div>
+        <div class="card-title-block">
+          <div class="card-title">PatrickJS/awesome-cursorrules</div>
+          <div class="card-url"><a href="https://github.com/PatrickJS/awesome-cursorrules" target="_blank">https://github.com/PatrickJS/awesome-cursorrules</a></div>
+        </div>
+      </div>
+      <div class="card-meta">
+        <div class="meta-item meta-stars">⭐ 40,300 Stars</div>
+        <div class="meta-item">🍴 3.4k Forks</div>
+        <div class="meta-item">📜 CC0-1.0（公共领域）</div>
+      </div>
+      <div class="card-why">
+        Cursor 用户首选，精选各框架和语言的 .mdc 规则文件，公共领域许可无任何使用限制，开箱即用。
+      </div>
+      <ul class="card-features">
+        <li>现代 <code>.mdc</code> 格式（YAML frontmatter）：description / globs / alwaysApply</li>
+        <li>覆盖主流栈：Next.js, React, Vue, SvelteKit, FastAPI, Go, Laravel, Flutter 等</li>
+        <li>专项规则：反幻觉守卫、Supabase 认证安全、反谄媚编码纪律</li>
+        <li>分类清晰：前端框架、后端全栈、移动端、测试、安全、数据库/API 等</li>
+        <li>团队协同：规则放入版本控制，统一 AI 行为</li>
+      </ul>
+      <div class="card-for"><strong>适用：</strong>Cursor 用户，需要框架/语言特定最佳实践</div>
+    </div>
+
+    <!-- #6 agentskills/agentskills -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-rank">6️⃣</div>
+        <div class="card-title-block">
+          <div class="card-title">agentskills/agentskills</div>
+          <div class="card-url"><a href="https://github.com/agentskills/agentskills" target="_blank">https://github.com/agentskills/agentskills</a></div>
+        </div>
+      </div>
+      <div class="card-meta">
+        <div class="meta-item meta-stars">⭐ 22,700 Stars</div>
+        <div class="meta-item">🍴 1.4k Forks</div>
+        <div class="meta-item">📜 Apache 2.0 / CC-BY-4.0</div>
+      </div>
+      <div class="card-why">
+        Anthropic 发布的官方开放标准，定义 Skill 的规范格式，为整个生态提供跨平台互通的基础。不是工具集合，而是 Skill 的"语言规范"。
+      </div>
+      <ul class="card-features">
+        <li>Skill = 以 <code>SKILL.md</code> 为核心的文件夹结构标准</li>
+        <li>渐进式披露：Discovery → Activation → Execution 三阶段</li>
+        <li>极小上下文占用设计原则</li>
+        <li>跨平台兼容：任何支持技能的 Agent 均可使用</li>
+        <li>开放标准：Apache 2.0 代码许可 + CC-BY-4.0 文档许可</li>
+      </ul>
+      <div class="card-for"><strong>适用：</strong>想要构建标准化、跨平台兼容技能的开发者和工具作者</div>
+    </div>
+
+    <!-- #7 anthropics/claude-code-action -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-rank">7️⃣</div>
+        <div class="card-title-block">
+          <div class="card-title">anthropics/claude-code-action</div>
+          <div class="card-url"><a href="https://github.com/anthropics/claude-code-action" target="_blank">https://github.com/anthropics/claude-code-action</a></div>
+        </div>
+      </div>
+      <div class="card-meta">
+        <div class="meta-item meta-stars">⭐ 8,300 Stars</div>
+        <div class="meta-item">🍴 2k Forks</div>
+        <div class="meta-item">🏷️ v1.0 (2025-08-26)</div>
+        <div class="meta-item">📜 MIT License</div>
+      </div>
+      <div class="card-why">
+        官方 GitHub Actions 集成，通过 @claude mention 在 PR/Issue 中触发 Claude，支持多云后端。
+      </div>
+      <ul class="card-features">
+        <li>通过 <code>@claude</code> mention 触发，无需离开 GitHub</li>
+        <li>支持：Anthropic API / AWS Bedrock / Google Vertex AI / Microsoft Foundry</li>
+        <li>代码实现、代码审查、问题回答一体化</li>
+        <li>进度追踪（动态 checkboxes 实时更新）</li>
+        <li>结构化 JSON 输出，可在 CI/CD 流水线中使用</li>
+      </ul>
+      <div class="card-for"><strong>适用：</strong>希望在 GitHub CI/CD 流程中集成 Claude 的团队</div>
+    </div>
+
+  </section>
+
+  <!-- Methodology -->
+  <section class="method-section">
+    <div class="section-title">AI Skill 设计方法论（2026 业界最佳实践）</div>
+    <div class="method-grid">
+      <div class="method-card">
+        <div class="method-icon">🧘</div>
+        <div class="method-title">Skill 之禅</div>
+        <div class="method-body">
+          复杂即功能（Skill 是文件夹非单文件）· 隐式激活（模式匹配而非显式调用）· 信号密度最大化（每个 Token 都必须有价值）· 重视踩坑点（Gotchas 是核心价值）
+        </div>
+      </div>
+      <div class="method-card">
+        <div class="method-icon">🪜</div>
+        <div class="method-title">渐进式披露</div>
+        <div class="method-body">
+          description 定义触发边界 → SKILL.md 写核心流程 → references/ 放参考资料 → scripts/ 放执行脚本。减少无关信息进入上下文，降低 Token 消耗。
+        </div>
+      </div>
+      <div class="method-card">
+        <div class="method-icon">🎛️</div>
+        <div class="method-title">自由度分级</div>
+        <div class="method-body">
+          高自由度（分析诊断）→ 启发式策略 · 中等自由度（报告生成）→ 模板框架 · 低自由度（格式转换）→ 固定脚本+明确顺序。根据容错率控制约束强度。
+        </div>
+      </div>
+      <div class="method-card">
+        <div class="method-icon">🚧</div>
+        <div class="method-title">边界清晰</div>
+        <div class="method-body">
+          Skill ≠ Prompt（临时探索）· Skill ≠ 脚本（确定性执行）· Skill ≠ 知识库（存储内容）· Skill ≠ MCP（提供操作能力）。Skill = 任务编排器，告诉 Agent 怎么做。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Token Pyramid -->
+  <section class="pyramid-section">
+    <div class="section-title">三层上下文成本模型（Token 经济学）</div>
+    <div class="pyramid">
+      <div class="pyramid-row">
+        <div>
+          <div class="pyramid-label" style="color: var(--gold);">Index 层（寸土寸金）</div>
+          <div class="pyramid-desc">仅包含 name + description，每次对话都加载，必须极精简</div>
+        </div>
+        <div class="pyramid-tokens">~100 tokens</div>
+      </div>
+      <div class="pyramid-row">
+        <div>
+          <div class="pyramid-label" style="color: var(--accent);">Load 层（精打细算）</div>
+          <div class="pyramid-desc">SKILL.md 主体内容，加载时付费，聚焦核心流程和 Gotchas</div>
+        </div>
+        <div class="pyramid-tokens">~5,000 tokens</div>
+      </div>
+      <div class="pyramid-row">
+        <div>
+          <div class="pyramid-label" style="color: var(--accent2);">Runtime 层（按需自由）</div>
+          <div class="pyramid-desc">scripts/、references/ 重资产，仅 Agent 实际读取时才消耗</div>
+        </div>
+        <div class="pyramid-tokens">按需加载</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Selection Guide -->
+  <section class="guide-section">
+    <div class="section-title">选型建议</div>
+    <div class="guide-grid">
+      <div class="guide-item">
+        <div class="guide-emoji">🌐</div>
+        <div>
+          <div class="guide-need">需要跨工具通用性和系统化方法论</div>
+          <div class="guide-pick">→ obra/superpowers</div>
+        </div>
+      </div>
+      <div class="guide-item">
+        <div class="guide-emoji">⚙️</div>
+        <div>
+          <div class="guide-need">工程师个人/团队工作流标准化</div>
+          <div class="guide-pick">→ mattpocock/skills</div>
+        </div>
+      </div>
+      <div class="guide-item">
+        <div class="guide-emoji">🚀</div>
+        <div>
+          <div class="guide-need">全流程编码辅助 + 最广兼容性</div>
+          <div class="guide-pick">→ addyosmani/agent-skills</div>
+        </div>
+      </div>
+      <div class="guide-item">
+        <div class="guide-emoji">✏️</div>
+        <div>
+          <div class="guide-need">Cursor 用户，框架最佳实践</div>
+          <div class="guide-pick">→ PatrickJS/awesome-cursorrules</div>
+        </div>
+      </div>
+      <div class="guide-item">
+        <div class="guide-emoji">📐</div>
+        <div>
+          <div class="guide-need">构建标准化跨平台技能</div>
+          <div class="guide-pick">→ agentskills/agentskills</div>
+        </div>
+      </div>
+      <div class="guide-item">
+        <div class="guide-emoji">🔧</div>
+        <div>
+          <div class="guide-need">GitHub CI/CD 集成 Claude</div>
+          <div class="guide-pick">→ anthropics/claude-code-action</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="container">
+    数据来源：GitHub 实时页面验证（2026-07-09）&nbsp;·&nbsp; 由 Claude Code AI 研究整理
+  </div>
+</footer>
+
+</body>
+</html>
