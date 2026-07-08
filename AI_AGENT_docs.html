@@ -1,0 +1,1438 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Code CLI Agent 技术栈 — 全面官方资料索引</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-2: #f0f4ff;
+      --ink: #101828;
+      --muted: #667085;
+      --line: rgba(16, 24, 40, 0.12);
+      --blue: #2457ff;
+      --teal: #0f9f8f;
+      --amber: #cf7a14;
+      --rose: #c2415d;
+      --violet: #7557d8;
+      --code-bg: #111827;
+      --code-text: #d1d5db;
+      --shadow: 0 18px 48px rgba(16, 24, 40, 0.10);
+      --radius: 8px;
+      --font: Aptos, "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
+      --mono: "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background:
+        linear-gradient(180deg, #eef3ff 0, rgba(238, 243, 255, 0) 360px),
+        radial-gradient(circle at 20% 0%, rgba(36, 87, 255, 0.09), transparent 360px),
+        var(--bg);
+      color: var(--ink);
+      letter-spacing: 0;
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .page-shell {
+      display: grid;
+      grid-template-columns: 292px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 22px 18px;
+      border-right: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(16px);
+      overflow: auto;
+    }
+
+    .brand {
+      display: grid;
+      gap: 6px;
+      padding: 10px 8px 18px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 16px;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: conic-gradient(from 180deg, var(--blue), var(--teal), var(--amber), var(--violet), var(--blue));
+      box-shadow: 0 8px 22px rgba(36, 87, 255, 0.22);
+    }
+
+    .brand strong { font-size: 14px; line-height: 1.25; }
+    .brand span { color: var(--muted); font-size: 12px; line-height: 1.45; }
+
+    .search {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 10px 11px;
+      font: 13px var(--font);
+      outline: none;
+      margin-bottom: 14px;
+    }
+
+    .search:focus {
+      border-color: rgba(36, 87, 255, 0.45);
+      box-shadow: 0 0 0 3px rgba(36, 87, 255, 0.10);
+    }
+
+    .nav-title {
+      margin: 12px 8px 8px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .nav-list {
+      display: grid;
+      gap: 4px;
+    }
+
+    .nav-list a {
+      display: block;
+      padding: 8px 10px;
+      color: #344054;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .nav-list a:hover {
+      background: var(--surface-2);
+      text-decoration: none;
+      color: var(--blue);
+    }
+
+    main {
+      min-width: 0;
+    }
+
+    .hero {
+      padding: 48px clamp(24px, 5vw, 72px) 28px;
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(135deg, rgba(36, 87, 255, 0.10), transparent 42%),
+        linear-gradient(315deg, rgba(15, 159, 143, 0.10), transparent 36%);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 10px;
+      border: 1px solid rgba(36, 87, 255, 0.22);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    h1 {
+      margin: 18px 0 10px;
+      max-width: 1040px;
+      font-size: clamp(34px, 5vw, 64px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .hero-subtitle {
+      margin: 0;
+      max-width: 980px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 22px;
+    }
+
+    .chip-row span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.78);
+      color: #344054;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 26px;
+      max-width: 920px;
+    }
+
+    .stat {
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      box-shadow: 0 10px 28px rgba(16, 24, 40, 0.06);
+    }
+
+    .stat b {
+      display: block;
+      font-size: 24px;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .content {
+      width: min(1120px, calc(100vw - 292px - 48px));
+      margin: 0 auto;
+      padding: 34px 0 72px;
+    }
+
+    .doc-section {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 26px;
+      margin: 0 0 20px;
+      overflow: hidden;
+    }
+
+    .doc-section::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 5px;
+      background: var(--blue);
+    }
+
+    .doc-section.accent-2::before { background: var(--teal); }
+    .doc-section.accent-3::before { background: var(--amber); }
+    .doc-section.accent-4::before { background: var(--rose); }
+
+    .section-kicker {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      margin: 0 0 18px;
+      font-size: 30px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 26px 0 10px;
+      padding-top: 4px;
+      font-size: 20px;
+      line-height: 1.35;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 10px 0;
+      color: #344054;
+      font-size: 15px;
+      line-height: 1.78;
+    }
+
+    .bullet-line {
+      position: relative;
+      padding-left: 18px;
+    }
+
+    .bullet-line::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: .82em;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--teal);
+    }
+
+    blockquote {
+      margin: 16px 0;
+      padding: 14px 16px;
+      border-left: 4px solid var(--blue);
+      background: #f5f8ff;
+      color: #23304f;
+      border-radius: 0 8px 8px 0;
+      line-height: 1.75;
+      font-weight: 650;
+    }
+
+    .ascii-block {
+      margin: 16px 0;
+      padding: 16px;
+      border-radius: 8px;
+      background: var(--code-bg);
+      color: var(--code-text);
+      overflow: auto;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    }
+
+    .ascii-block code {
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.55;
+      white-space: pre;
+    }
+
+    code {
+      font-family: var(--mono);
+      font-size: .92em;
+      background: #eef2ff;
+      color: #1d3bb3;
+      border: 1px solid rgba(36, 87, 255, 0.14);
+      border-radius: 5px;
+      padding: 1px 5px;
+    }
+
+    .ascii-block code code {
+      background: transparent;
+      border: 0;
+      padding: 0;
+      color: inherit;
+    }
+
+    .ascii-block > code {
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+      color: var(--code-text);
+      font-size: 12px;
+    }
+
+    .ascii-block a {
+      color: #93c5fd;
+      text-decoration: none;
+    }
+
+    .ascii-block a:hover {
+      text-decoration: underline;
+    }
+
+    .rule {
+      height: 1px;
+      background: var(--line);
+      margin: 18px 0;
+    }
+
+    .doc-section.is-hidden,
+    .nav-list a.is-hidden {
+      display: none;
+    }
+
+    .footer {
+      color: var(--muted);
+      font-size: 12px;
+      padding: 20px 0 0;
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      .page-shell {
+        display: block;
+      }
+
+      .sidebar {
+        position: relative;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .content {
+        width: min(100% - 28px, 980px);
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .sidebar { display: none; }
+      .page-shell { display: block; }
+      .content { width: auto; margin: 0; padding: 0; }
+      .hero { padding: 24px 0; }
+      .doc-section { box-shadow: none; break-inside: avoid; }
+      a { color: #000; text-decoration: underline; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <strong>AI Agent Docs</strong>
+        <span>官方资料索引 · 视觉化阅读版</span>
+      </div>
+      <input class="search" id="doc-search" type="search" placeholder="搜索章节、协议、CLI、SDK..." aria-label="搜索文档" />
+      <div class="nav-title">Navigation</div>
+      <nav class="nav-list" id="toc">
+            <a href="#零-agent-skills-规范-置顶">1. 零、Agent Skills 规范（置顶）</a>
+            <a href="#一-核心标准层-mcp-model-context-protocol">2. 一、核心标准层：MCP（Model Context Protocol）</a>
+            <a href="#二-agent-skill-创建-评估与发布-完整操作手册">3. 二、Agent Skill 创建、评估与发布 — 完整操作手册</a>
+            <a href="#三-claude-code-cli-anthropic-官方">4. 三、Claude Code CLI（Anthropic 官方）</a>
+            <a href="#四-claude-agent-sdk-api-anthropic-platform">5. 四、Claude Agent SDK + API（Anthropic Platform）</a>
+            <a href="#五-qwen-code-cli-agent-阿里-qwenlm-官方">6. 五、Qwen Code CLI Agent（阿里 / QwenLM 官方）</a>
+            <a href="#六-底层技术层-node-js-typescript-npm">7. 六、底层技术层：Node.js + TypeScript + npm</a>
+            <a href="#七-中文专项资料">8. 七、中文专项资料</a>
+            <a href="#八-lil-log-lilian-weng-技术博客">9. 八、Lil&#39;Log — Lilian Weng 技术博客</a>
+            <a href="#九-agent-harness-架构原理与工程实现">10. 九、Agent Harness — 架构原理与工程实现</a>
+            <a href="#官方-github-资源总览">11. 官方 GitHub 资源总览</a>
+            <a href="#推荐学习路径">12. 推荐学习路径</a>
+      </nav>
+    </aside>
+
+    <main>
+      <header class="hero">
+        <div class="eyebrow">AI Code CLI Agent</div>
+        <h1>AI Code CLI Agent 技术栈 — 全面官方资料索引</h1>
+        <p class="hero-subtitle">整理日期：2026-07-08 | 覆盖：agentskills / MCP / Claude Code / Qwen Code /<br />Node.js / TypeScript / npm / Lil&#39;Log / Agent Harness</p>
+        <div class="chip-row">
+            <span>Agent Skills</span>
+            <span>MCP</span>
+            <span>Claude Code</span>
+            <span>Qwen Code</span>
+            <span>Node.js</span>
+            <span>TypeScript</span>
+            <span>npm</span>
+            <span>Lil&#39;Log</span>
+            <span>Agent Harness</span>
+        </div>
+        <div class="stats" aria-label="文档统计">
+          <div class="stat"><b>12</b><span>主章节</span></div>
+          <div class="stat"><b>143</b><span>唯一官方链接</span></div>
+          <div class="stat"><b>UTF-8</b><span>中文内容保真</span></div>
+        </div>
+      </header>
+
+      <div class="content" id="content">
+<section class="doc-section accent-1" id="零-agent-skills-规范-置顶">
+<div class="section-kicker">Section 1</div>
+<h2>零、Agent Skills 规范（置顶）</h2>
+<blockquote>agentskills 是 AI Agent 技能的开放标准格式，由 Anthropic</blockquote>
+<blockquote>发起，定义了如何将专业知识和可复用工作流打包为可跨产品移植的 Skill。这是理解</blockquote>
+<blockquote>Claude Code Skills / Qwen Code Skills / 任意兼容 Agent 扩展机制的底层规范。</blockquote>
+<pre class="ascii-block"><code>┌──────────────────────────┬────────────────────────────────────────────┐
+│           资源           │                    链接                    │
+├──────────────────────────┼────────────────────────────────────────────┤
+│ GitHub 主仓库（22.6k ★） │ <a href="https://github.com/agentskills/agentskills" target="_blank" rel="noopener noreferrer">https://github.com/agentskills/agentskills</a> │
+├──────────────────────────┼────────────────────────────────────────────┤
+│ 官方文档                 │ <a href="https://agentskills.io" target="_blank" rel="noopener noreferrer">https://agentskills.io</a>                     │
+├──────────────────────────┼────────────────────────────────────────────┤
+│ Skill 规范详细说明       │ <a href="https://agentskills.io/specification" target="_blank" rel="noopener noreferrer">https://agentskills.io/specification</a>       │
+├──────────────────────────┼────────────────────────────────────────────┤
+│ 官方示例集               │ <a href="https://github.com/anthropics/skills" target="_blank" rel="noopener noreferrer">https://github.com/anthropics/skills</a>       │
+├──────────────────────────┼────────────────────────────────────────────┤
+│ 完整文档索引             │ <a href="https://agentskills.io/llms.txt" target="_blank" rel="noopener noreferrer">https://agentskills.io/llms.txt</a>            │
+└──────────────────────────┴────────────────────────────────────────────┘</code></pre>
+<p>核心机制：</p>
+<p>一个 Skill = 一个文件夹 + 一个 SKILL.md</p>
+<pre class="ascii-block"><code>┌─ SKILL.md          ← 元数据 + 指令（必须）
+├─ scripts/          ← 可运行代码（可选）
+├─ references/       ← 参考文档（可选）
+└─ assets/           ← 资产文件（可选）</code></pre>
+<p>三阶段加载（Progressive Disclosure）：</p>
+<pre class="ascii-block"><code>┌────────────┬─────────────┬────────────────────────┐
+│    阶段    │  加载内容   │          作用          │
+├────────────┼─────────────┼────────────────────────┤
+│ Discovery  │ 名称 + 描述 │ Agent 发现技能是否适用 │
+├────────────┼─────────────┼────────────────────────┤
+│ Activation │ 完整指令    │ 匹配后加载执行逻辑     │
+├────────────┼─────────────┼────────────────────────┤
+│ Execution  │ 脚本 / 文件 │ 运行捆绑代码           │
+└────────────┴─────────────┴────────────────────────┘</code></pre>
+<p>许可证： 代码 Apache 2.0 &#183; 文档 CC-BY-4.0</p>
+<div class="rule"></div>
+</section>
+<section class="doc-section accent-2" id="一-核心标准层-mcp-model-context-protocol">
+<div class="section-kicker">Section 2</div>
+<h2>一、核心标准层：MCP（Model Context Protocol）</h2>
+<blockquote>MCP 是 AI Agent 时代的 USB-C 接口协议，是所有 AI Code CLI Agent 的互联基础。</blockquote>
+<pre class="ascii-block"><code>┌─────────────┬───────────────────────────────────────────────────────────┐
+│    资源     │                           链接                            │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ 官方入门    │ <a href="https://modelcontextprotocol.io/introduction" target="_blank" rel="noopener noreferrer">https://modelcontextprotocol.io/introduction</a>              │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ 完整规范 (2 │ <a href="https://modelcontextprotocol.io/specification/2025-11-25/" target="_blank" rel="noopener noreferrer">https://modelcontextprotocol.io/specification/2025-11-25/</a> │
+│ 025-11-25)  │ index.md                                                  │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ 架构设计    │ <a href="https://modelcontextprotocol.io/docs/learn/architecture.m" target="_blank" rel="noopener noreferrer">https://modelcontextprotocol.io/docs/learn/architecture.m</a> │
+│             │ d                                                         │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ 构建 MCP    │ <a href="https://modelcontextprotocol.io/docs/develop/build-server" target="_blank" rel="noopener noreferrer">https://modelcontextprotocol.io/docs/develop/build-server</a> │
+│ Server      │ .md                                                       │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ 构建 MCP    │ <a href="https://modelcontextprotocol.io/docs/develop/build-client" target="_blank" rel="noopener noreferrer">https://modelcontextprotocol.io/docs/develop/build-client</a> │
+│ Client      │ .md                                                       │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ TypeScript/ │ <a href="https://modelcontextprotocol.io/docs/sdk.md" target="_blank" rel="noopener noreferrer">https://modelcontextprotocol.io/docs/sdk.md</a>               │
+│ Python SDK  │                                                           │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ 传输层 (Tra │ <a href="https://modelcontextprotocol.io/specification/2025-11-25/" target="_blank" rel="noopener noreferrer">https://modelcontextprotocol.io/specification/2025-11-25/</a> │
+│ nsports)    │ basic/transports.md                                       │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ 授权 OAuth  │ <a href="https://modelcontextprotocol.io/specification/2025-11-25/" target="_blank" rel="noopener noreferrer">https://modelcontextprotocol.io/specification/2025-11-25/</a> │
+│ 2.1         │ basic/authorization.md                                    │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ Server      │ <a href="https://modelcontextprotocol.io/specification/2025-11-25/" target="_blank" rel="noopener noreferrer">https://modelcontextprotocol.io/specification/2025-11-25/</a> │
+│ Tools 原语  │ server/tools.md                                           │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ Server      │ <a href="https://modelcontextprotocol.io/specification/2025-11-25/" target="_blank" rel="noopener noreferrer">https://modelcontextprotocol.io/specification/2025-11-25/</a> │
+│ Resources   │ server/resources.md                                       │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ Server      │ <a href="https://modelcontextprotocol.io/specification/2025-11-25/" target="_blank" rel="noopener noreferrer">https://modelcontextprotocol.io/specification/2025-11-25/</a> │
+│ Prompts     │ server/prompts.md                                         │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ Client      │ <a href="https://modelcontextprotocol.io/specification/2025-11-25/" target="_blank" rel="noopener noreferrer">https://modelcontextprotocol.io/specification/2025-11-25/</a> │
+│ Sampling    │ client/sampling.md                                        │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ MCP         │                                                           │
+│ Inspector   │ <a href="https://modelcontextprotocol.io/docs/tools/inspector.md" target="_blank" rel="noopener noreferrer">https://modelcontextprotocol.io/docs/tools/inspector.md</a>   │
+│ 调试        │                                                           │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ 安全最佳实  │ <a href="https://modelcontextprotocol.io/docs/tutorials/security/s" target="_blank" rel="noopener noreferrer">https://modelcontextprotocol.io/docs/tutorials/security/s</a> │
+│ 践          │ ecurity_best_practices.md                                 │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ Schema 参考 │ <a href="https://modelcontextprotocol.io/specification/2025-11-25/" target="_blank" rel="noopener noreferrer">https://modelcontextprotocol.io/specification/2025-11-25/</a> │
+│             │ schema.md                                                 │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ 完整文档索  │ <a href="https://modelcontextprotocol.io/llms.txt" target="_blank" rel="noopener noreferrer">https://modelcontextprotocol.io/llms.txt</a>                  │
+│ 引          │                                                           │
+└─────────────┴───────────────────────────────────────────────────────────┘</code></pre>
+<div class="rule"></div>
+</section>
+<section class="doc-section accent-3" id="二-agent-skill-创建-评估与发布-完整操作手册">
+<div class="section-kicker">Section 3</div>
+<h2>二、Agent Skill 创建、评估与发布 — 完整操作手册</h2>
+<h3 id="2-1-核心结构-官方规范">2.1 核心结构（官方规范）</h3>
+<p>my-skill/</p>
+<pre class="ascii-block"><code>├── SKILL.md          ← 必须：元数据 + 指令
+├── scripts/          ← 可选：可执行脚本（Python/Bash/JS）
+├── references/       ← 可选：按需加载的详细参考文档
+└── assets/           ← 可选：模板、图片、数据文件</code></pre>
+<p>SKILL.md 完整字段参考：</p>
+<pre class="ascii-block"><code>┌─────────────────┬─────┬────────────────────────────────┬─────────────────┐
+│      字段       │ 必  │              约束              │      说明       │
+│                 │ 须  │                                │                 │
+├─────────────────┼─────┼────────────────────────────────┼─────────────────┤
+│ name            │ ✅  │ 1-64字符，仅小写字母/数字/连字 │ Skill 标识符    │
+│                 │     │ 符，须与文件夹同名             │                 │
+├─────────────────┼─────┼────────────────────────────────┼─────────────────┤
+│ description     │ ✅  │ 1-1024字符                     │ Agent 用它判断  │
+│                 │     │                                │ 何时激活        │
+├─────────────────┼─────┼────────────────────────────────┼─────────────────┤
+│ license         │ ❌  │ —                              │ 如 Apache-2.0   │
+├─────────────────┼─────┼────────────────────────────────┼─────────────────┤
+│ compatibility   │ ❌  │ 1-500字符                      │ 环境要求        │
+├─────────────────┼─────┼────────────────────────────────┼─────────────────┤
+│ metadata        │ ❌  │ 键值对                         │ 自定义元数据    │
+├─────────────────┼─────┼────────────────────────────────┼─────────────────┤
+│ allowed-tools   │ ❌  │ 空格分隔                       │ 预批准工具，无  │
+│                 │     │                                │ 需用户确认      │
+├─────────────────┼─────┼────────────────────────────────┼─────────────────┤
+│ disallowed-tool │ ❌  │ —                              │ 此 Skill 激活时 │
+│ s               │     │                                │ 禁用的工具      │
+├─────────────────┼─────┼────────────────────────────────┼─────────────────┤
+│ disable-model-i │     │                                │ 禁止 Claude 自  │
+│ nvocation       │ ❌  │ true/false                     │ 动触发，仅手动  │
+│                 │     │                                │ /name           │
+├─────────────────┼─────┼────────────────────────────────┼─────────────────┤
+│ user-invocable  │ ❌  │ true/false                     │ 是否出现在 /    │
+│                 │     │                                │ 菜单            │
+├─────────────────┼─────┼────────────────────────────────┼─────────────────┤
+│ context         │ ❌  │ fork                           │ 在隔离子 Agent  │
+│                 │     │                                │ 中运行          │
+├─────────────────┼─────┼────────────────────────────────┼─────────────────┤
+│                 │     │                                │ context: fork   │
+│ agent           │ ❌  │ Explore/Plan 等                │ 时指定 Agent    │
+│                 │     │                                │ 类型            │
+├─────────────────┼─────┼────────────────────────────────┼─────────────────┤
+│ model           │ ❌  │ —                              │ 覆盖当前        │
+│                 │     │                                │ Session 的模型  │
+├─────────────────┼─────┼────────────────────────────────┼─────────────────┤
+│ effort          │ ❌  │ low/medium/high/xhigh/max      │ 覆盖推理强度    │
+├─────────────────┼─────┼────────────────────────────────┼─────────────────┤
+│ when_to_use     │ ❌  │ —                              │ 补充触发场景    │
+├─────────────────┼─────┼────────────────────────────────┼─────────────────┤
+│                 │     │                                │ 自动补全提示，  │
+│ argument-hint   │ ❌  │ —                              │ 如              │
+│                 │     │                                │ [issue-number]  │
+├─────────────────┼─────┼────────────────────────────────┼─────────────────┤
+│ arguments       │ ❌  │ 空格分隔或列表                 │ 命名位置参数    │
+├─────────────────┼─────┼────────────────────────────────┼─────────────────┤
+│                 │     │                                │ 限制 Skill      │
+│ paths           │ ❌  │ Glob 模式                      │ 仅在特定文件路  │
+│                 │     │                                │ 径激活          │
+└─────────────────┴─────┴────────────────────────────────┴─────────────────┘</code></pre>
+<h3 id="2-2-方式一-npx-skills-init-脚手架生成器">2.2 方式一：npx skills init — 脚手架生成器</h3>
+<blockquote>定位： 纯命令行，生成最小化 SKILL.md</blockquote>
+<blockquote>模板（&quot;毛坯房&quot;），适合熟悉手写的开发者。前置条件：Node.js 22+</blockquote>
+<p># 基础用法</p>
+<p>npx skills init</p>
+<p># 指定名称</p>
+<p>npx skills init my-skill-name</p>
+<p># 其他 CLI 命令</p>
+<p>npx skills add obra/superpowers          # 从 GitHub 安装</p>
+<p>npx skills add obra/superpowers -g       # 全局安装</p>
+<p>npx skills list                          # 查看已安装</p>
+<p>npx skills update                        # 更新</p>
+<p>npx skills remove my-skill-name          # 删除</p>
+<p>生成的模板（毛坯房）：</p>
+<div class="rule"></div>
+<p>name: my-skill-name</p>
+<p>description: A description of what this skill does and when to use it.</p>
+<div class="rule"></div>
+<p>&lt;!-- Add your skill instructions here --&gt;</p>
+<h3 id="2-3-方式二-手动从零创建">2.3 方式二：手动从零创建</h3>
+<p>安装路径速查表：</p>
+<pre class="ascii-block"><code>┌───────────────────┬──────────────────────────────────┐
+│      作用域       │               路径               │
+├───────────────────┼──────────────────────────────────┤
+│ 个人（全部项目）  │ ~/.claude/skills/&lt;name&gt;/SKILL.md │
+├───────────────────┼──────────────────────────────────┤
+│ 项目              │ .claude/skills/&lt;name&gt;/SKILL.md   │
+├───────────────────┼──────────────────────────────────┤
+│ VS Code / Copilot │ .agents/skills/&lt;name&gt;/SKILL.md   │
+├───────────────────┼──────────────────────────────────┤
+│ Cursor            │ ~/.cursor/skills/&lt;name&gt;/SKILL.md │
+└───────────────────┴──────────────────────────────────┘</code></pre>
+<p>模板 A：最简 Skill（5分钟上手）</p>
+<p>mkdir -p ~/.claude/skills/roll-dice</p>
+<div class="rule"></div>
+<p>name: roll-dice</p>
+<p>description: Roll dice using a random number generator. Use when asked to roll</p>
+<p> a die (d6, d20, etc.), roll dice, or generate a random dice roll.</p>
+<div class="rule"></div>
+<p>To roll a die, use the following command:</p>
+<p>echo $((RANDOM % &lt;sides&gt; + 1))</p>
+<p>Replace &lt;sides&gt; with the number of sides (e.g., 6 for d6, 20 for d20).</p>
+<p>**模板 B：带动态上下文注入**</p>
+<p>&gt; 核心技巧：`<code> !</code>command<code> </code>` 在 Skill 加载时预执行，将输出内联到 Prompt 中。</p>
+<div class="rule"></div>
+<p>name: summarize-changes</p>
+<p>description: Summarizes uncommitted changes and flags anything risky. Use when</p>
+<p> the user asks what changed, wants a commit message, or asks to review their</p>
+<p>diff.</p>
+<div class="rule"></div>
+<p>## Current changes</p>
+<p>!<code>git diff HEAD</code></p>
+<p>## Instructions</p>
+<p>Summarize the changes above in 2-3 bullet points, then list any risks:</p>
+<p class="bullet-line">Missing error handling</p>
+<p class="bullet-line">Hardcoded values</p>
+<p class="bullet-line">Tests that need updating</p>
+<p>If the diff is empty, say there are no uncommitted changes.</p>
+<p>模板 C：带参数 + 手动触发</p>
+<div class="rule"></div>
+<p>name: fix-issue</p>
+<p>description: Fix a GitHub issue by number</p>
+<p>disable-model-invocation: true</p>
+<p>argument-hint: [issue-number]</p>
+<p>allowed-tools: Bash(gh *) Read Grep</p>
+<div class="rule"></div>
+<p>Fix GitHub issue $ARGUMENTS following our coding standards.</p>
+<p>1. Read the issue: <code>gh issue view $ARGUMENTS</code></p>
+<p>2. Understand requirements</p>
+<p>3. Implement the fix</p>
+<p>4. Write tests</p>
+<p>5. Create a commit with message: <code>fix: resolve issue #$ARGUMENTS</code></p>
+<p>用法：/fix-issue 123</p>
+<p>模板 D：带子目录的完整 Skill（精装房）</p>
+<p>~/.claude/skills/code-review/</p>
+<pre class="ascii-block"><code>├── SKILL.md
+├── references/
+│   └── standards.md
+└── scripts/
+    └── check_patterns.py</code></pre>
+<div class="rule"></div>
+<p>name: code-review</p>
+<p>description: Perform a thorough code review. Use when reviewing PRs, checking</p>
+<p>code quality, or asked to review files.</p>
+<p>context: fork</p>
+<p>agent: Explore</p>
+<p>allowed-tools: Bash(git *) Read Grep</p>
+<div class="rule"></div>
+<p>## PR Context</p>
+<p class="bullet-line">Diff: !<code>gh pr diff</code></p>
+<p class="bullet-line">Changed files: !<code>gh pr diff --name-only</code></p>
+<p>## Review Checklist</p>
+<p>1. Check for security issues (SQL injection, XSS, auth bypasses)</p>
+<p>2. Verify error handling on all external calls</p>
+<p>3. Confirm tests exist for new logic</p>
+<p>4. Check against our standards: see</p>
+<p>[references/standards.md](references/standards.md)</p>
+<p>Run pattern check:</p>
+<p>python3 ${CLAUDE_SKILL_DIR}/scripts/check_patterns.py .</p>
+<p>Output Format</p>
+<p>## Code Review</p>
+<p>### Summary</p>
+<p>[2-3 sentence overview]</p>
+<p>### Issues Found</p>
+<p class="bullet-line">🔴 Critical: [issue]</p>
+<p class="bullet-line">🟡 Warning: [issue]</p>
+<p class="bullet-line">🟢 Suggestion: [issue]</p>
+<p>### Verdict</p>
+<p>[ ] Approved  [ ] Needs Changes</p>
+<h3 id="2-4-方式三-skill-creator-智能元技能-推荐">2.4 方式三：<code>skill-creator</code> — 智能元技能（推荐）</h3>
+<blockquote>定位：Claude Code 插件驱动的 Skill 生成、评估与触发描述优化工具，适合生产级 Skill 设计与迭代。</blockquote>
+<p>安装与启用：</p>
+<pre class="ascii-block"><code># 安装
+/plugin install skill-creator@claude-plugins-official
+
+# 若找不到，先更新 marketplace
+/plugin marketplace update claude-plugins-official
+
+# 或首次添加 marketplace
+/plugin marketplace add anthropics/claude-plugins-official
+
+# 重载插件
+/reload-plugins</code></pre>
+<p>使用方式：</p>
+<pre class="ascii-block"><code># 创建新 Skill
+&quot;我想做一个将 Word 文档转换为 PPT 的 Skill&quot;
+
+# 评估已有 Skill
+&quot;evaluate my summarize-changes skill with skill-creator&quot;
+
+# 优化触发描述
+&quot;optimize the description of my code-review skill&quot;</code></pre>
+<p>skill-creator 自动执行：</p>
+<p class="bullet-line">生成完整目录结构（含 <code>scripts/</code>、<code>references/</code> 等）</p>
+<p class="bullet-line">创建测试用例，写入 <code>evals/evals.json</code></p>
+<p class="bullet-line">运行隔离评估，结果写入 <code>grading.json</code></p>
+<p class="bullet-line">聚合对比数据到 <code>benchmark.json</code>（有/无 Skill 的通过率、耗时、token 数）</p>
+<p class="bullet-line">生成 HTML 可视化报告</p>
+<h3 id="2-5-方式对比总表">2.5 方式对比总表</h3>
+<pre class="ascii-block"><code>┌────────────┬────────────────────┬─────────────┬──────────────────────┐
+│    维度    │  npx skills init   │  手动创建   │    skill-creator     │
+├────────────┼────────────────────┼─────────────┼──────────────────────┤
+│ 门槛       │ Node.js 22+        │ 零依赖      │ Claude Code + 插件   │
+├────────────┼────────────────────┼─────────────┼──────────────────────┤
+│ 产物完整度 │ 最小模板（毛坯房） │ 按需完整    │ 精装房（含测试体系） │
+├────────────┼────────────────────┼─────────────┼──────────────────────┤
+│ 自动评估   │ ❌                 │ ❌          │ ✅                   │
+├────────────┼────────────────────┼─────────────┼──────────────────────┤
+│ 触发词调优 │ ❌                 │ 手动        │ ✅ 自动 A/B 测试     │
+├────────────┼────────────────────┼─────────────┼──────────────────────┤
+│ 子目录生成 │ ❌                 │ 手动        │ ✅ 自动规划          │
+├────────────┼────────────────────┼─────────────┼──────────────────────┤
+│ 适合场景   │ 熟悉结构的开发者   │ 学习 / 定制 │ 生产级 Skill         │
+└────────────┴────────────────────┴─────────────┴──────────────────────┘</code></pre>
+<h3 id="2-6-发布到-github-并让他人安装">2.6 发布到 GitHub 并让他人安装</h3>
+<p>第一步：整理目录</p>
+<pre class="ascii-block"><code>my-skill-repo/
+├── README.md
+├── SKILL.md
+├── scripts/
+└── references/</code></pre>
+<p>本仓库已提供一个可安装的本地示例：</p>
+<pre class="ascii-block"><code>exmaples/
+└── skill1/
+    └── SKILL.md</code></pre>
+<p>第二步：推送</p>
+<pre class="ascii-block"><code>git init &amp;&amp; git add . &amp;&amp; git commit -m &quot;feat: add my-skill&quot;
+git remote add origin https://github.com/&lt;用户名&gt;/&lt;仓库名&gt;
+git push -u origin main</code></pre>
+<p>第三步：他人安装</p>
+<pre class="ascii-block"><code># 命令行安装（推荐）
+npx skills add &lt;用户名&gt;/&lt;仓库名&gt;
+npx skills add &lt;用户名&gt;/&lt;仓库名&gt; -g   # 全局
+
+# 本地示例安装
+npx skills add ./exmaples/skill1
+
+# 手动安装（无 Node.js 环境）
+cp -r my-skill/ ~/.claude/skills/my-skill/          # Claude Code 个人
+cp -r my-skill/ .claude/skills/my-skill/            # Claude Code 项目
+cp -r my-skill/ .agents/skills/my-skill/            # VS Code
+cp -r my-skill/ ~/.cursor/skills/my-skill/          # Cursor</code></pre>
+<p><code>exmaples/skill1/SKILL.md</code> 是完整示例本体，可直接作为仓库根目录发布，也可通过本地路径先验证安装流程。</p>
+<h3 id="2-7-官方资源">2.7 官方资源</h3>
+<pre class="ascii-block"><code>┌────────────────┬────────────────────────────────────────────────────────┐
+│      资源      │                          链接                          │
+├────────────────┼────────────────────────────────────────────────────────┤
+│ 规范（完整字段 │ <a href="https://agentskills.io/specification" target="_blank" rel="noopener noreferrer">https://agentskills.io/specification</a>                   │
+│ 参考）         │                                                        │
+├────────────────┼────────────────────────────────────────────────────────┤
+│ Quickstart     │ <a href="https://agentskills.io/skill-creation/quickstart" target="_blank" rel="noopener noreferrer">https://agentskills.io/skill-creation/quickstart</a>       │
+│ 教程           │                                                        │
+├────────────────┼────────────────────────────────────────────────────────┤
+│ Best Practices │ <a href="https://agentskills.io/skill-creation/best-practices.m" target="_blank" rel="noopener noreferrer">https://agentskills.io/skill-creation/best-practices.m</a> │
+│                │ d                                                      │
+├────────────────┼────────────────────────────────────────────────────────┤
+│ 评估方法       │ <a href="https://agentskills.io/skill-creation/evaluating-skill" target="_blank" rel="noopener noreferrer">https://agentskills.io/skill-creation/evaluating-skill</a> │
+│                │ s                                                      │
+├────────────────┼────────────────────────────────────────────────────────┤
+│ 优化触发描述   │ <a href="https://agentskills.io/skill-creation/optimizing-descr" target="_blank" rel="noopener noreferrer">https://agentskills.io/skill-creation/optimizing-descr</a> │
+│                │ iptions                                                │
+├────────────────┼────────────────────────────────────────────────────────┤
+│ 脚本使用       │ <a href="https://agentskills.io/skill-creation/using-scripts" target="_blank" rel="noopener noreferrer">https://agentskills.io/skill-creation/using-scripts</a>    │
+├────────────────┼────────────────────────────────────────────────────────┤
+│ Claude Code    │                                                        │
+│ Skills         │ <a href="https://code.claude.com/docs/en/skills.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/skills.md</a>              │
+│ 完整文档       │                                                        │
+├────────────────┼────────────────────────────────────────────────────────┤
+│ 官方示例 Skill │ <a href="https://github.com/anthropics/skills" target="_blank" rel="noopener noreferrer">https://github.com/anthropics/skills</a>                   │
+│  仓库          │                                                        │
+├────────────────┼────────────────────────────────────────────────────────┤
+│ skill-creator  │ <a href="https://github.com/anthropics/claude-plugins-official/" target="_blank" rel="noopener noreferrer">https://github.com/anthropics/claude-plugins-official/</a> │
+│ 插件源码       │ tree/main/plugins/skill-creator                        │
+├────────────────┼────────────────────────────────────────────────────────┤
+│ 兼容客户端全列 │ <a href="https://agentskills.io/clients" target="_blank" rel="noopener noreferrer">https://agentskills.io/clients</a>                         │
+│ 表（35+）      │                                                        │
+└────────────────┴────────────────────────────────────────────────────────┘</code></pre>
+<div class="rule"></div>
+</section>
+<section class="doc-section accent-4" id="三-claude-code-cli-anthropic-官方">
+<div class="section-kicker">Section 4</div>
+<h2>三、Claude Code CLI（Anthropic 官方）</h2>
+<p>入门</p>
+<pre class="ascii-block"><code>┌───────────────┬──────────────────────────────────────────────────────────┐
+│     资源      │                           链接                           │
+├───────────────┼──────────────────────────────────────────────────────────┤
+│ Quickstart    │ <a href="https://code.claude.com/docs/en/quickstart.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/quickstart.md</a>            │
+├───────────────┼──────────────────────────────────────────────────────────┤
+│ How Claude    │ <a href="https://code.claude.com/docs/en/how-claude-code-works.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/how-claude-code-works.md</a> │
+│ Code Works    │                                                          │
+├───────────────┼──────────────────────────────────────────────────────────┤
+│ Features      │ <a href="https://code.claude.com/docs/en/features-overview.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/features-overview.md</a>     │
+│ Overview      │                                                          │
+├───────────────┼──────────────────────────────────────────────────────────┤
+│ CLI Reference │ <a href="https://code.claude.com/docs/en/cli-reference.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/cli-reference.md</a>         │
+├───────────────┼──────────────────────────────────────────────────────────┤
+│ Best          │ <a href="https://code.claude.com/docs/en/best-practices.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/best-practices.md</a>        │
+│ Practices     │                                                          │
+├───────────────┼──────────────────────────────────────────────────────────┤
+│ Common        │ <a href="https://code.claude.com/docs/en/common-workflows.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/common-workflows.md</a>      │
+│ Workflows     │                                                          │
+└───────────────┴──────────────────────────────────────────────────────────┘</code></pre>
+<p>Agentic 核心</p>
+<pre class="ascii-block"><code>┌─────────────────┬────────────────────────────────────────────────────┐
+│      资源       │                        链接                        │
+├─────────────────┼────────────────────────────────────────────────────┤
+│ Subagents       │ <a href="https://code.claude.com/docs/en/sub-agents.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/sub-agents.md</a>      │
+├─────────────────┼────────────────────────────────────────────────────┤
+│ Agent Teams     │ <a href="https://code.claude.com/docs/en/agent-teams.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/agent-teams.md</a>     │
+├─────────────────┼────────────────────────────────────────────────────┤
+│ Workflows       │ <a href="https://code.claude.com/docs/en/workflows.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/workflows.md</a>       │
+├─────────────────┼────────────────────────────────────────────────────┤
+│ Worktrees       │ <a href="https://code.claude.com/docs/en/worktrees.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/worktrees.md</a>       │
+├─────────────────┼────────────────────────────────────────────────────┤
+│ Hooks Guide     │ <a href="https://code.claude.com/docs/en/hooks-guide.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/hooks-guide.md</a>     │
+├─────────────────┼────────────────────────────────────────────────────┤
+│ Hooks Reference │ <a href="https://code.claude.com/docs/en/hooks.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/hooks.md</a>           │
+├─────────────────┼────────────────────────────────────────────────────┤
+│ Sessions        │ <a href="https://code.claude.com/docs/en/sessions.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/sessions.md</a>        │
+├─────────────────┼────────────────────────────────────────────────────┤
+│ Headless Mode   │ <a href="https://code.claude.com/docs/en/headless.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/headless.md</a>        │
+├─────────────────┼────────────────────────────────────────────────────┤
+│ Scheduled Tasks │ <a href="https://code.claude.com/docs/en/scheduled-tasks.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/scheduled-tasks.md</a> │
+└─────────────────┴────────────────────────────────────────────────────┘</code></pre>
+<p>MCP 集成</p>
+<pre class="ascii-block"><code>┌───────────────────┬──────────────────────────────────────────────────────┐
+│       资源        │                         链接                         │
+├───────────────────┼──────────────────────────────────────────────────────┤
+│ MCP Quickstart    │ <a href="https://code.claude.com/docs/en/mcp-quickstart.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/mcp-quickstart.md</a>    │
+├───────────────────┼──────────────────────────────────────────────────────┤
+│ MCP Complete      │ <a href="https://code.claude.com/docs/en/mcp.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/mcp.md</a>               │
+│ Guide             │                                                      │
+├───────────────────┼──────────────────────────────────────────────────────┤
+│ Skills Guide      │ <a href="https://code.claude.com/docs/en/skills.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/skills.md</a>            │
+├───────────────────┼──────────────────────────────────────────────────────┤
+│ Plugin            │ <a href="https://code.claude.com/docs/en/plugins.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/plugins.md</a>           │
+│ Development       │                                                      │
+├───────────────────┼──────────────────────────────────────────────────────┤
+│ Plugin Reference  │ <a href="https://code.claude.com/docs/en/plugins-reference.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/plugins-reference.md</a> │
+└───────────────────┴──────────────────────────────────────────────────────┘</code></pre>
+<p>CI/CD &amp; 集成</p>
+<pre class="ascii-block"><code>┌───────────────────┬───────────────────────────────────────────────────┐
+│       资源        │                       链接                        │
+├───────────────────┼───────────────────────────────────────────────────┤
+│ GitHub Actions    │ <a href="https://code.claude.com/docs/en/github-actions.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/github-actions.md</a> │
+├───────────────────┼───────────────────────────────────────────────────┤
+│ GitLab CI/CD      │ <a href="https://code.claude.com/docs/en/gitlab-ci-cd.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/gitlab-ci-cd.md</a>   │
+├───────────────────┼───────────────────────────────────────────────────┤
+│ VS Code Extension │ <a href="https://code.claude.com/docs/en/vs-code.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/vs-code.md</a>        │
+├───────────────────┼───────────────────────────────────────────────────┤
+│ JetBrains         │ <a href="https://code.claude.com/docs/en/jetbrains.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/jetbrains.md</a>      │
+└───────────────────┴───────────────────────────────────────────────────┘</code></pre>
+<p>配置与权限</p>
+<pre class="ascii-block"><code>┌─────────────────────┬────────────────────────────────────────────────────┐
+│        资源         │                        链接                        │
+├─────────────────────┼────────────────────────────────────────────────────┤
+│ Settings Reference  │ <a href="https://code.claude.com/docs/en/settings.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/settings.md</a>        │
+├─────────────────────┼────────────────────────────────────────────────────┤
+│ Permissions         │ <a href="https://code.claude.com/docs/en/permissions.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/permissions.md</a>     │
+├─────────────────────┼────────────────────────────────────────────────────┤
+│ Memory System       │ <a href="https://code.claude.com/docs/en/memory.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/memory.md</a>          │
+│ (CLAUDE.md)         │                                                    │
+├─────────────────────┼────────────────────────────────────────────────────┤
+│ Environment         │ <a href="https://code.claude.com/docs/en/env-vars.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/env-vars.md</a>        │
+│ Variables           │                                                    │
+├─────────────────────┼────────────────────────────────────────────────────┤
+│ Tools Reference     │ <a href="https://code.claude.com/docs/en/tools-reference.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/tools-reference.md</a> │
+└─────────────────────┴────────────────────────────────────────────────────┘</code></pre>
+<blockquote>完整文档索引： <a href="https://code.claude.com/docs/llms.txt" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/llms.txt</a></blockquote>
+<div class="rule"></div>
+</section>
+<section class="doc-section accent-1" id="四-claude-agent-sdk-api-anthropic-platform">
+<div class="section-kicker">Section 5</div>
+<h2>四、Claude Agent SDK + API（Anthropic Platform）</h2>
+<p>Agent SDK</p>
+<pre class="ascii-block"><code>┌───────────┬─────────────────────────────────────────────────────────────┐
+│   资源    │                            链接                             │
+├───────────┼─────────────────────────────────────────────────────────────┤
+│ Agent SDK │ <a href="https://code.claude.com/docs/en/agent-sdk/overview.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/agent-sdk/overview.md</a>       │
+│  Overview │                                                             │
+├───────────┼─────────────────────────────────────────────────────────────┤
+│ Agent SDK │                                                             │
+│  Quicksta │ <a href="https://code.claude.com/docs/en/agent-sdk/quickstart.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/agent-sdk/quickstart.md</a>     │
+│ rt        │                                                             │
+├───────────┼─────────────────────────────────────────────────────────────┤
+│ Agent     │ <a href="https://code.claude.com/docs/en/agent-sdk/agent-loop.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/agent-sdk/agent-loop.md</a>     │
+│ Loop      │                                                             │
+├───────────┼─────────────────────────────────────────────────────────────┤
+│ Sessions  │                                                             │
+│ Managemen │ <a href="https://code.claude.com/docs/en/agent-sdk/sessions.md" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/agent-sdk/sessions.md</a>       │
+│ t         │                                                             │
+├───────────┼─────────────────────────────────────────────────────────────┤
+│ Session   │ <a href="https://code.claude.com/docs/en/agent-sdk/session-storage.m" target="_blank" rel="noopener noreferrer">https://code.claude.com/docs/en/agent-sdk/session-storage.m</a> │
+│ Storage   │ d                                                           │
+└───────────┴─────────────────────────────────────────────────────────────┘</code></pre>
+<p>Managed Agents（平台级）</p>
+<pre class="ascii-block"><code>┌───────────┬─────────────────────────────────────────────────────────────┐
+│   资源    │                            链接                             │
+├───────────┼─────────────────────────────────────────────────────────────┤
+│ Overview  │ <a href="https://platform.claude.com/docs/en/managed-agents/overview" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/managed-agents/overview</a> │
+│           │ .md                                                         │
+├───────────┼─────────────────────────────────────────────────────────────┤
+│ Quickstar │ <a href="https://platform.claude.com/docs/en/managed-agents/quicksta" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/managed-agents/quicksta</a> │
+│ t         │ rt.md                                                       │
+├───────────┼─────────────────────────────────────────────────────────────┤
+│ Multi-Age │ <a href="https://platform.claude.com/docs/en/managed-agents/multi-ag" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/managed-agents/multi-ag</a> │
+│ nt        │ ent.md                                                      │
+│ Systems   │                                                             │
+├───────────┼─────────────────────────────────────────────────────────────┤
+│ Tools Int │ <a href="https://platform.claude.com/docs/en/managed-agents/tools.md" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/managed-agents/tools.md</a> │
+│ egration  │                                                             │
+├───────────┼─────────────────────────────────────────────────────────────┤
+│ Memory    │ <a href="https://platform.claude.com/docs/en/managed-agents/memory.m" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/managed-agents/memory.m</a> │
+│           │ d                                                           │
+├───────────┼─────────────────────────────────────────────────────────────┤
+│ Files API │ <a href="https://platform.claude.com/docs/en/managed-agents/files.md" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/managed-agents/files.md</a> │
+├───────────┼─────────────────────────────────────────────────────────────┤
+│ Webhooks  │ <a href="https://platform.claude.com/docs/en/managed-agents/webhooks" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/managed-agents/webhooks</a> │
+│           │ .md                                                         │
+├───────────┼─────────────────────────────────────────────────────────────┤
+│ MCP       │ <a href="https://platform.claude.com/docs/en/managed-agents/mcp-conn" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/managed-agents/mcp-conn</a> │
+│ Connector │ ector.md                                                    │
+├───────────┼─────────────────────────────────────────────────────────────┤
+│ API       │ <a href="https://platform.claude.com/docs/en/managed-agents/referenc" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/managed-agents/referenc</a> │
+│ Reference │ e.md                                                        │
+└───────────┴─────────────────────────────────────────────────────────────┘</code></pre>
+<p>核心 API 特性</p>
+<pre class="ascii-block"><code>┌─────────┬───────────────────────────────────────────────────────────────┐
+│  资源   │                             链接                              │
+├─────────┼───────────────────────────────────────────────────────────────┤
+│ Tool    │ <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/agents-and-tools/tool-use</a> │
+│ Use Ove │ /overview.md                                                  │
+│ rview   │                                                               │
+├─────────┼───────────────────────────────────────────────────────────────┤
+│ Paralle │ <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/agents-and-tools/tool-use</a> │
+│ l Tool  │ /parallel-tool-use.md                                         │
+│ Use     │                                                               │
+├─────────┼───────────────────────────────────────────────────────────────┤
+│ Structu │ <a href="https://platform.claude.com/docs/en/build-with-claude/structu" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/build-with-claude/structu</a> │
+│ red     │ red-outputs.md                                                │
+│ Outputs │                                                               │
+├─────────┼───────────────────────────────────────────────────────────────┤
+│ Extende │ <a href="https://platform.claude.com/docs/en/build-with-claude/extende" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/build-with-claude/extende</a> │
+│ d Think │ d-thinking.md                                                 │
+│ ing     │                                                               │
+├─────────┼───────────────────────────────────────────────────────────────┤
+│ Prompt  │ <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/build-with-claude/prompt-</a> │
+│ Caching │ caching.md                                                    │
+├─────────┼───────────────────────────────────────────────────────────────┤
+│ Streami │ <a href="https://platform.claude.com/docs/en/build-with-claude/streami" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/build-with-claude/streami</a> │
+│ ng      │ ng.md                                                         │
+├─────────┼───────────────────────────────────────────────────────────────┤
+│ Files   │ <a href="https://platform.claude.com/docs/en/build-with-claude/files.m" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/build-with-claude/files.m</a> │
+│ API     │ d                                                             │
+├─────────┼───────────────────────────────────────────────────────────────┤
+│ Batch   │ <a href="https://platform.claude.com/docs/en/build-with-claude/batch-p" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/build-with-claude/batch-p</a> │
+│ Process │ rocessing.md                                                  │
+│ ing     │                                                               │
+├─────────┼───────────────────────────────────────────────────────────────┤
+│ Vision  │ <a href="https://platform.claude.com/docs/en/build-with-claude/vision" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/build-with-claude/vision</a>. │
+│         │ md                                                            │
+├─────────┼───────────────────────────────────────────────────────────────┤
+│ PDF     │ <a href="https://platform.claude.com/docs/en/build-with-claude/pdf-sup" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/build-with-claude/pdf-sup</a> │
+│ Support │ port.md                                                       │
+└─────────┴───────────────────────────────────────────────────────────────┘</code></pre>
+<p>API Reference（端点）</p>
+<pre class="ascii-block"><code>┌─────────┬───────────────────────────────────────────────────────────────┐
+│  资源   │                             链接                              │
+├─────────┼───────────────────────────────────────────────────────────────┤
+│ Create  │ <a href="https://platform.claude.com/docs/en/api/messages/create.md" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/api/messages/create.md</a>    │
+│ Message │                                                               │
+├─────────┼───────────────────────────────────────────────────────────────┤
+│ Batch M │ <a href="https://platform.claude.com/docs/en/api/messages/batches.md" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/api/messages/batches.md</a>   │
+│ essages │                                                               │
+├─────────┼───────────────────────────────────────────────────────────────┤
+│ Agents  │ <a href="https://platform.claude.com/docs/en/api/beta/agents.md" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/api/beta/agents.md</a>        │
+│ API     │                                                               │
+├─────────┼───────────────────────────────────────────────────────────────┤
+│ Session │ <a href="https://platform.claude.com/docs/en/api/beta/sessions/create" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/api/beta/sessions/create</a>. │
+│ s API   │ md                                                            │
+├─────────┼───────────────────────────────────────────────────────────────┤
+│ Skills  │ <a href="https://platform.claude.com/docs/en/api/beta/skills/create.md" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/api/beta/skills/create.md</a> │
+│ API     │                                                               │
+├─────────┼───────────────────────────────────────────────────────────────┤
+│ Files   │ <a href="https://platform.claude.com/docs/en/api/beta/files.md" target="_blank" rel="noopener noreferrer">https://platform.claude.com/docs/en/api/beta/files.md</a>         │
+│ API     │                                                               │
+└─────────┴───────────────────────────────────────────────────────────────┘</code></pre>
+<blockquote>完整 API 文档索引： <a href="https://platform.claude.com/llms.txt" target="_blank" rel="noopener noreferrer">https://platform.claude.com/llms.txt</a></blockquote>
+<div class="rule"></div>
+</section>
+<section class="doc-section accent-2" id="五-qwen-code-cli-agent-阿里-qwenlm-官方">
+<div class="section-kicker">Section 6</div>
+<h2>五、Qwen Code CLI Agent（阿里 / QwenLM 官方）</h2>
+<pre class="ascii-block"><code>┌─────────────┬───────────────────────────────────────────────────────────┐
+│    资源     │                           链接                            │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ GitHub      │ <a href="https://github.com/QwenLM/qwen-code" target="_blank" rel="noopener noreferrer">https://github.com/QwenLM/qwen-code</a>                       │
+│ 主仓库      │                                                           │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ 官方文档    │ <a href="https://qwenlm.github.io/qwen-code-docs/en/users/overview" target="_blank" rel="noopener noreferrer">https://qwenlm.github.io/qwen-code-docs/en/users/overview</a> │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ Qwen        │ <a href="https://qwen.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">https://qwen.readthedocs.io/en/latest/</a>                    │
+│ 模型文档    │                                                           │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ Qwen-Agent  │ <a href="https://github.com/QwenLM/Qwen-Agent" target="_blank" rel="noopener noreferrer">https://github.com/QwenLM/Qwen-Agent</a>                      │
+│ 框架        │                                                           │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ npm 安装包  │ npm install -g @qwen-code/qwen-code@latest（需 Node.js    │
+│             │ 22+）                                                     │
+└─────────────┴───────────────────────────────────────────────────────────┘</code></pre>
+<p>CLI 命令速查：</p>
+<pre class="ascii-block"><code>┌───────────────┬───────────────────────────────────┐
+│     命令      │               说明                │
+├───────────────┼───────────────────────────────────┤
+│ qwen          │ 交互式 TUI                        │
+├───────────────┼───────────────────────────────────┤
+│ qwen -p &quot;...&quot; │ Headless/脚本模式                 │
+├───────────────┼───────────────────────────────────┤
+│ qwen serve    │ Daemon 模式（HTTP+SSE，ACP 协议） │
+├───────────────┼───────────────────────────────────┤
+│ qwen channel  │ 连接 IM 平台（钉钉/微信/飞书）    │
+├───────────────┼───────────────────────────────────┤
+│ /auth         │ 会话内配置 Provider 和 API Key    │
+└───────────────┴───────────────────────────────────┘</code></pre>
+<p>多 Provider 支持： OpenAI / Anthropic / Gemini / Qwen / Ollama / vLLM</p>
+<div class="rule"></div>
+</section>
+<section class="doc-section accent-3" id="六-底层技术层-node-js-typescript-npm">
+<div class="section-kicker">Section 7</div>
+<h2>六、底层技术层：Node.js + TypeScript + npm</h2>
+<p>Node.js（官方）</p>
+<pre class="ascii-block"><code>┌───────────────┬─────────────────────────────────────────────────────────┐
+│     资源      │                          链接                           │
+├───────────────┼─────────────────────────────────────────────────────────┤
+│ 介绍 &amp; 入门   │ <a href="https://nodejs.org/en/learn/getting-started/introductio" target="_blank" rel="noopener noreferrer">https://nodejs.org/en/learn/getting-started/introductio</a> │
+│               │ n-to-nodejs                                             │
+├───────────────┼─────────────────────────────────────────────────────────┤
+│ 运行脚本      │ <a href="https://nodejs.org/learn/command-line/run-nodejs-script" target="_blank" rel="noopener noreferrer">https://nodejs.org/learn/command-line/run-nodejs-script</a> │
+│               │ s-from-the-command-line                                 │
+├───────────────┼─────────────────────────────────────────────────────────┤
+│ 命令行输入    │ <a href="https://nodejs.org/learn/command-line/accept-input-from" target="_blank" rel="noopener noreferrer">https://nodejs.org/learn/command-line/accept-input-from</a> │
+│               │ -the-command-line-in-nodejs                             │
+├───────────────┼─────────────────────────────────────────────────────────┤
+│ 读取环境变量  │ <a href="https://nodejs.org/learn/command-line/how-to-read-envir" target="_blank" rel="noopener noreferrer">https://nodejs.org/learn/command-line/how-to-read-envir</a> │
+│               │ onment-variables-from-nodejs                            │
+├───────────────┼─────────────────────────────────────────────────────────┤
+│ TS 原生运行（ │ <a href="https://nodejs.org/learn/typescript/run-natively" target="_blank" rel="noopener noreferrer">https://nodejs.org/learn/typescript/run-natively</a>        │
+│ 无需编译）    │                                                         │
+├───────────────┼─────────────────────────────────────────────────────────┤
+│ 发布 TS 包    │ <a href="https://nodejs.org/learn/typescript/publishing-a-ts-pac" target="_blank" rel="noopener noreferrer">https://nodejs.org/learn/typescript/publishing-a-ts-pac</a> │
+│               │ kage                                                    │
+├───────────────┼─────────────────────────────────────────────────────────┤
+│ Event Loop    │ <a href="https://nodejs.org/learn/asynchronous-work/event-loop-t" target="_blank" rel="noopener noreferrer">https://nodejs.org/learn/asynchronous-work/event-loop-t</a> │
+│               │ imers-and-nexttick                                      │
+├───────────────┼─────────────────────────────────────────────────────────┤
+│ Promises      │ <a href="https://nodejs.org/learn/asynchronous-work/discover-pro" target="_blank" rel="noopener noreferrer">https://nodejs.org/learn/asynchronous-work/discover-pro</a> │
+│               │ mises-in-nodejs                                         │
+├───────────────┼─────────────────────────────────────────────────────────┤
+│ 流处理        │ <a href="https://nodejs.org/learn/modules/how-to-use-streams" target="_blank" rel="noopener noreferrer">https://nodejs.org/learn/modules/how-to-use-streams</a>     │
+├───────────────┼─────────────────────────────────────────────────────────┤
+│ WebSocket     │ <a href="https://nodejs.org/learn/getting-started/websocket" target="_blank" rel="noopener noreferrer">https://nodejs.org/learn/getting-started/websocket</a>      │
+├───────────────┼─────────────────────────────────────────────────────────┤
+│ Fetch API     │ <a href="https://nodejs.org/learn/getting-started/fetch" target="_blank" rel="noopener noreferrer">https://nodejs.org/learn/getting-started/fetch</a>          │
+├───────────────┼─────────────────────────────────────────────────────────┤
+│ 测试运行器    │ <a href="https://nodejs.org/learn/test-runner/introduction" target="_blank" rel="noopener noreferrer">https://nodejs.org/learn/test-runner/introduction</a>       │
+└───────────────┴─────────────────────────────────────────────────────────┘</code></pre>
+<p>TypeScript（官方）</p>
+<pre class="ascii-block"><code>┌────────────────┬────────────────────────────────────────────────────────┐
+│      资源      │                          链接                          │
+├────────────────┼────────────────────────────────────────────────────────┤
+│ 官方文档首页   │ <a href="https://www.typescriptlang.org/docs/" target="_blank" rel="noopener noreferrer">https://www.typescriptlang.org/docs/</a>                   │
+├────────────────┼────────────────────────────────────────────────────────┤
+│ TS for JS      │ <a href="https://www.typescriptlang.org/docs/handbook/typescrip" target="_blank" rel="noopener noreferrer">https://www.typescriptlang.org/docs/handbook/typescrip</a> │
+│ Programmers    │ t-in-5-minutes.html                                    │
+├────────────────┼────────────────────────────────────────────────────────┤
+│ Handbook（完整 │ <a href="https://www.typescriptlang.org/docs/handbook/intro.htm" target="_blank" rel="noopener noreferrer">https://www.typescriptlang.org/docs/handbook/intro.htm</a> │
+│ 手册）         │ l                                                      │
+├────────────────┼────────────────────────────────────────────────────────┤
+│ TSConfig 参考  │ <a href="https://www.typescriptlang.org/tsconfig/" target="_blank" rel="noopener noreferrer">https://www.typescriptlang.org/tsconfig/</a>               │
+├────────────────┼────────────────────────────────────────────────────────┤
+│ 在线           │ <a href="https://www.typescriptlang.org/play/" target="_blank" rel="noopener noreferrer">https://www.typescriptlang.org/play/</a>                   │
+│ Playground     │                                                        │
+├────────────────┼────────────────────────────────────────────────────────┤
+│ 泛型           │ <a href="https://www.typescriptlang.org/docs/handbook/2/generic" target="_blank" rel="noopener noreferrer">https://www.typescriptlang.org/docs/handbook/2/generic</a> │
+│                │ s.html                                                 │
+├────────────────┼────────────────────────────────────────────────────────┤
+│ 条件类型       │ <a href="https://www.typescriptlang.org/docs/handbook/2/conditi" target="_blank" rel="noopener noreferrer">https://www.typescriptlang.org/docs/handbook/2/conditi</a> │
+│                │ onal-types.html                                        │
+├────────────────┼────────────────────────────────────────────────────────┤
+│ Mapped Types   │ <a href="https://www.typescriptlang.org/docs/handbook/2/mapped-" target="_blank" rel="noopener noreferrer">https://www.typescriptlang.org/docs/handbook/2/mapped-</a> │
+│                │ types.html                                             │
+└────────────────┴────────────────────────────────────────────────────────┘</code></pre>
+<p>npm（官方）</p>
+<pre class="ascii-block"><code>┌──────────┬──────────────────────────────────────────────────────────────┐
+│   资源   │                             链接                             │
+├──────────┼──────────────────────────────────────────────────────────────┤
+│ 官方文档 │ <a href="https://docs.npmjs.com/" target="_blank" rel="noopener noreferrer">https://docs.npmjs.com/</a>                                      │
+├──────────┼──────────────────────────────────────────────────────────────┤
+│ CLI      │ <a href="https://docs.npmjs.com/cli/v11/commands" target="_blank" rel="noopener noreferrer">https://docs.npmjs.com/cli/v11/commands</a>                      │
+│ 命令参考 │                                                              │
+├──────────┼──────────────────────────────────────────────────────────────┤
+│ package. │ <a href="https://docs.npmjs.com/cli/v11/configuring-npm/package-json" target="_blank" rel="noopener noreferrer">https://docs.npmjs.com/cli/v11/configuring-npm/package-json</a>  │
+│ json     │                                                              │
+├──────────┼──────────────────────────────────────────────────────────────┤
+│ Workspac │ <a href="https://docs.npmjs.com/cli/v11/using-npm/workspaces" target="_blank" rel="noopener noreferrer">https://docs.npmjs.com/cli/v11/using-npm/workspaces</a>          │
+│ es       │                                                              │
+├──────────┼──────────────────────────────────────────────────────────────┤
+│ 安全审计 │ <a href="https://docs.npmjs.com/auditing-package-dependencies-for-sec" target="_blank" rel="noopener noreferrer">https://docs.npmjs.com/auditing-package-dependencies-for-sec</a> │
+│          │ urity-vulnerabilities                                        │
+└──────────┴──────────────────────────────────────────────────────────────┘</code></pre>
+<div class="rule"></div>
+</section>
+<section class="doc-section accent-4" id="七-中文专项资料">
+<div class="section-kicker">Section 8</div>
+<h2>七、中文专项资料</h2>
+<p>npm 中文官方文档</p>
+<pre class="ascii-block"><code>┌─────────────┬───────────────────────────────────────────────────────────┐
+│    页面     │                           链接                            │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ 关于        │ <a href="https://npm.nodejs.cn/about-npm" target="_blank" rel="noopener noreferrer">https://npm.nodejs.cn/about-npm</a>                           │
+│ npm（入口） │                                                           │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ CLI         │ <a href="https://npm.nodejs.cn/cli/v11/commands" target="_blank" rel="noopener noreferrer">https://npm.nodejs.cn/cli/v11/commands</a>                    │
+│ 命令参考    │                                                           │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ package.jso │ <a href="https://npm.nodejs.cn/cli/v11/configuring-npm/package-jso" target="_blank" rel="noopener noreferrer">https://npm.nodejs.cn/cli/v11/configuring-npm/package-jso</a> │
+│ n 配置      │ n                                                         │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ .npmrc 配置 │ <a href="https://npm.nodejs.cn/cli/v11/configuring-npm/npmrc" target="_blank" rel="noopener noreferrer">https://npm.nodejs.cn/cli/v11/configuring-npm/npmrc</a>       │
+├─────────────┼───────────────────────────────────────────────────────────┤
+│ Workspaces  │ <a href="https://npm.nodejs.cn/cli/v11/using-npm/workspaces" target="_blank" rel="noopener noreferrer">https://npm.nodejs.cn/cli/v11/using-npm/workspaces</a>        │
+└─────────────┴───────────────────────────────────────────────────────────┘</code></pre>
+<p>知乎专栏 — AI 前端技术</p>
+<pre class="ascii-block"><code>┌───────────────────────┬──────────────────────────────────────────────────┐
+│         资源          │                       链接                       │
+├───────────────────────┼──────────────────────────────────────────────────┤
+│ AI                    │ <a href="https://zhuanlan.zhihu.com/p/2004291018753864363" target="_blank" rel="noopener noreferrer">https://zhuanlan.zhihu.com/p/2004291018753864363</a> │
+│ 时代前端技术专栏文章  │                                                  │
+└───────────────────────┴──────────────────────────────────────────────────┘</code></pre>
+<p>菜鸟教程 — Claude Code 系列</p>
+<pre class="ascii-block"><code>┌───────────────┬─────────────────────────────────────────────────────────┐
+│     页面      │                          链接                           │
+├───────────────┼─────────────────────────────────────────────────────────┤
+│ Claude Code   │ <a href="https://www.runoob.com/claude-code/claude-code-symbols" target="_blank" rel="noopener noreferrer">https://www.runoob.com/claude-code/claude-code-symbols</a>. │
+│ 符号与图标说  │ html                                                    │
+│ 明            │                                                         │
+├───────────────┼─────────────────────────────────────────────────────────┤
+│ Claude Code   │ <a href="https://www.runoob.com/claude-code/claude-code-tutorial" target="_blank" rel="noopener noreferrer">https://www.runoob.com/claude-code/claude-code-tutorial</a> │
+│ 教程首页      │ .html                                                   │
+└───────────────┴─────────────────────────────────────────────────────────┘</code></pre>
+<div class="rule"></div>
+</section>
+<section class="doc-section accent-1" id="八-lil-log-lilian-weng-技术博客">
+<div class="section-kicker">Section 9</div>
+<h2>八、Lil&#39;Log — Lilian Weng 技术博客</h2>
+<blockquote>Lilian Weng（OpenAI 前研究副总裁）的个人技术博客，以长文深度综述著称，是理解</blockquote>
+<blockquote>AI Agent 系统架构、LLM 对齐、强化学习等核心机制的学术级参考资料。</blockquote>
+<pre class="ascii-block"><code>┌──────────┬───────────────────────────────┐
+│   资源   │             链接              │
+├──────────┼───────────────────────────────┤
+│ 博客首页 │ <a href="https://lilianweng.github.io/" target="_blank" rel="noopener noreferrer">https://lilianweng.github.io/</a> │
+└──────────┴───────────────────────────────┘</code></pre>
+<p>核心文章索引</p>
+<pre class="ascii-block"><code>┌─────────────────────────────────────────────┬──────┬────────────────────┐
+│                    文章                     │ 日期 │      关键主题      │
+├─────────────────────────────────────────────┼──────┼────────────────────┤
+│ Harness Engineering for Self-Improvement    │ 2026 │ AI 自我改进、递归  │
+│ (<a href="https://lilianweng.github.io/posts/2026-07" target="_blank" rel="noopener noreferrer">https://lilianweng.github.io/posts/2026-07</a> │ -07  │ 反馈循环           │
+│ -04-harness/)                               │      │                    │
+├─────────────────────────────────────────────┼──────┼────────────────────┤
+│ Scaling Laws, Carefully (<a href="https://lilianweng" target="_blank" rel="noopener noreferrer">https://lilianweng</a> │ 2026 │ Compute/Loss/模型  │
+│ .github.io/posts/2026-06-24-scaling-laws/)  │ -06  │ 规模关系           │
+├─────────────────────────────────────────────┼──────┼────────────────────┤
+│ Why We Think (<a href="https://lilianweng.github.io/" target="_blank" rel="noopener noreferrer">https://lilianweng.github.io/</a> │ 2025 │ 测试时计算、Chain- │
+│ posts/2025-05-01-thinking/)                 │ -05  │ of-Thought         │
+├─────────────────────────────────────────────┼──────┼────────────────────┤
+│ Reward Hacking in RL (<a href="https://lilianweng.gi" target="_blank" rel="noopener noreferrer">https://lilianweng.gi</a> │ 2024 │ RL                 │
+│ thub.io/posts/2024-11-28-reward-hacking/)   │ -11  │ 对齐失效、奖励欺骗 │
+├─────────────────────────────────────────────┼──────┼────────────────────┤
+│ Extrinsic Hallucinations in LLMs            │ 2024 │                    │
+│ (<a href="https://lilianweng.github.io/posts/2024-07" target="_blank" rel="noopener noreferrer">https://lilianweng.github.io/posts/2024-07</a> │ -07  │ 幻觉成因、事实性   │
+│ -07-hallucination/)                         │      │                    │
+├─────────────────────────────────────────────┼──────┼────────────────────┤
+│                                             │      │ Agent              │
+│ LLM Powered Autonomous Agents (<a href="https://lili" target="_blank" rel="noopener noreferrer">https://lili</a> │ 2023 │ 架构全景：规划 +   │
+│ anweng.github.io/posts/2023-06-23-agent/)   │ -06  │ 记忆 + 工具调用 ←  │
+│                                             │      │ 必读               │
+├─────────────────────────────────────────────┼──────┼────────────────────┤
+│ Prompt Engineering (<a href="https://lilianweng.gith" target="_blank" rel="noopener noreferrer">https://lilianweng.gith</a> │ 2023 │ In-Context         │
+│ ub.io/posts/2023-03-15-prompt-engineering/) │ -03  │ 提示策略           │
+├─────────────────────────────────────────────┼──────┼────────────────────┤
+│ Adversarial Attacks on LLMs                 │ 2023 │ Jailbreak、安全攻  │
+│ (<a href="https://lilianweng.github.io/posts/2023-10" target="_blank" rel="noopener noreferrer">https://lilianweng.github.io/posts/2023-10</a> │ -10  │ 防                 │
+│ -25-adv-attack-llm/)                        │      │                    │
+└─────────────────────────────────────────────┴──────┴────────────────────┘</code></pre>
+<div class="rule"></div>
+</section>
+<section class="doc-section accent-2" id="九-agent-harness-架构原理与工程实现">
+<div class="section-kicker">Section 10</div>
+<h2>九、Agent Harness — 架构原理与工程实现</h2>
+<blockquote>核心公式：Agent = Model + Harness</blockquote>
+<blockquote>模型提供智能，Harness 让智能变得可用。</blockquote>
+<h3 id="9-1-langchain-博客-agent-harness-解剖">9.1 LangChain 博客 — Agent Harness 解剖</h3>
+<p>资源: The Anatomy of an Agent Harness</p>
+<p>链接: <a href="https://www.langchain.com/blog/the-anatomy-of-an-agent-harness" target="_blank" rel="noopener noreferrer">https://www.langchain.com/blog/the-anatomy-of-an-agent-harness</a></p>
+<pre class="ascii-block"><code>行为 → Harness 组件映射：</code></pre>
+<pre class="ascii-block"><code>┌────────────────────┬─────────────────────────────────────────────┐
+│      期望行为      │              Harness 解决方案               │
+├────────────────────┼─────────────────────────────────────────────┤
+│ 持久化状态         │ 文件系统 + fs-ops 工具                      │
+├────────────────────┼─────────────────────────────────────────────┤
+│ 自主解题           │ Bash + 代码执行沙箱                         │
+├────────────────────┼─────────────────────────────────────────────┤
+│ 大规模安全执行     │ Sandboxes                                   │
+├────────────────────┼─────────────────────────────────────────────┤
+│ 超出训练截止的知识 │ Memory 文件、Web Search、MCP 工具           │
+├────────────────────┼─────────────────────────────────────────────┤
+│ 防止上下文退化     │ Compaction、Tool-call offloading、Skills    │
+├────────────────────┼─────────────────────────────────────────────┤
+│ 长周期复杂任务     │ Git、Ralph Loops、Planning 文件、自验证循环 │
+└────────────────────┴─────────────────────────────────────────────┘</code></pre>
+<h3 id="9-2-openharness-开源-agent-harness-框架">9.2 OpenHarness — 开源 Agent Harness 框架</h3>
+<pre class="ascii-block"><code>┌─────────────────────────┬────────────────────────────────────────────────┐
+│          资源           │                      链接                      │
+├─────────────────────────┼────────────────────────────────────────────────┤
+│ GitHub 主仓库（14.6k    │ <a href="https://github.com/HKUDS/OpenHarness/tree/main" target="_blank" rel="noopener noreferrer">https://github.com/HKUDS/OpenHarness/tree/main</a> │
+│ ★）                     │                                                │
+├─────────────────────────┼────────────────────────────────────────────────┤
+│ 安装                    │ pip install openharness-ai                     │
+└─────────────────────────┴────────────────────────────────────────────────┘</code></pre>
+<p>10 大子系统：</p>
+<pre class="ascii-block"><code>┌──────────────┬───────────────────────────────────────────┐
+│    子系统    │                   作用                    │
+├──────────────┼───────────────────────────────────────────┤
+│ engine/      │ Agent 循环 — stream → tool-call → iterate │
+├──────────────┼───────────────────────────────────────────┤
+│ tools/       │ 43+ 工具（文件、Shell、搜索、Web、MCP）   │
+├──────────────┼───────────────────────────────────────────┤
+│ skills/      │ 按需加载 .md 知识文件                     │
+├──────────────┼───────────────────────────────────────────┤
+│ plugins/     │ Commands / Hooks / Agents / MCP Server    │
+├──────────────┼───────────────────────────────────────────┤
+│ permissions/ │ 多级安全与路径规则                        │
+├──────────────┼───────────────────────────────────────────┤
+│ hooks/       │ PreToolUse / PostToolUse 生命周期事件     │
+├──────────────┼───────────────────────────────────────────┤
+│ commands/    │ 54 条斜杠命令                             │
+├──────────────┼───────────────────────────────────────────┤
+│ mcp/         │ MCP 协议客户端                            │
+├──────────────┼───────────────────────────────────────────┤
+│ memory/      │ 跨 Session 持久化记忆                     │
+├──────────────┼───────────────────────────────────────────┤
+│ coordinator/ │ 子 Agent 生成与团队协调                   │
+└──────────────┴───────────────────────────────────────────┘</code></pre>
+<p>多 Provider 支持：</p>
+<pre class="ascii-block"><code>┌────────────────┬───────────────────────────────────────────────────────┐
+│      风格      │                       Provider                        │
+├────────────────┼───────────────────────────────────────────────────────┤
+│ Anthropic 兼容 │ Claude、Kimi、GLM、MiniMax                            │
+├────────────────┼───────────────────────────────────────────────────────┤
+│ OpenAI 兼容    │ OpenAI、DeepSeek、Groq、Ollama、Gemini、GitHub Models │
+├────────────────┼───────────────────────────────────────────────────────┤
+│ 特殊           │ GitHub Copilot（OAuth 设备流，无需 API Key）          │
+└────────────────┴───────────────────────────────────────────────────────┘</code></pre>
+<h3 id="9-3-论文-code-as-agent-harness">9.3 论文 — Code as Agent Harness</h3>
+<pre class="ascii-block"><code>┌────────────┬────────────────────────────────────────────────────────────┐
+│    资源    │                            链接                            │
+├────────────┼────────────────────────────────────────────────────────────┤
+│ 论文原文   │ <a href="https://arxiv.org/abs/2605.18747" target="_blank" rel="noopener noreferrer">https://arxiv.org/abs/2605.18747</a>                           │
+├────────────┼────────────────────────────────────────────────────────────┤
+│ 相关论文列 │ <a href="https://github.com/YennNing/Awesome-Code-as-Agent-Harness-" target="_blank" rel="noopener noreferrer">https://github.com/YennNing/Awesome-Code-as-Agent-Harness-</a> │
+│ 表         │ Papers                                                     │
+└────────────┴────────────────────────────────────────────────────────────┘</code></pre>
+<p>三层架构：</p>
+<pre class="ascii-block"><code>┌─────────────────────────────────┐
+│  Layer 3: Scaling               │  单 Agent → 多 Agent 协调
+├─────────────────────────────────┤
+│  Layer 2: Harness Mechanisms    │  规划、记忆、工具调用、反馈控制
+├─────────────────────────────────┤
+│  Layer 1: Harness Interface     │  代码作为推理与环境建模的接口
+└─────────────────────────────────┘</code></pre>
+<div class="rule"></div>
+</section>
+<section class="doc-section accent-3" id="官方-github-资源总览">
+<div class="section-kicker">Section 11</div>
+<h2>官方 GitHub 资源总览</h2>
+<pre class="ascii-block"><code>┌──────────────────────────────────────────────────────┬──────────────────┐
+│                         仓库                         │       说明       │
+├──────────────────────────────────────────────────────┼──────────────────┤
+│ <a href="https://github.com/agentskills/agentskills" target="_blank" rel="noopener noreferrer">https://github.com/agentskills/agentskills</a>           │ Agent Skills     │
+│                                                      │ 开放规范         │
+├──────────────────────────────────────────────────────┼──────────────────┤
+│ <a href="https://github.com/anthropics/skills" target="_blank" rel="noopener noreferrer">https://github.com/anthropics/skills</a>                 │ 官方 Skill       │
+│                                                      │ 示例集           │
+├──────────────────────────────────────────────────────┼──────────────────┤
+│ <a href="https://github.com/anthropics/skills.git" target="_blank" rel="noopener noreferrer">https://github.com/anthropics/skills.git</a>             │ 官方 Skill       │
+│                                                      │ 示例集 Git URL   │
+├──────────────────────────────────────────────────────┼──────────────────┤
+│ <a href="https://github.com/anthropics/financial-services" target="_blank" rel="noopener noreferrer">https://github.com/anthropics/financial-services</a>     │ 金融服务行业     │
+│                                                      │ Agent 示例       │
+├──────────────────────────────────────────────────────┼──────────────────┤
+│ <a href="https://github.com/anthropics/claude-cookbooks" target="_blank" rel="noopener noreferrer">https://github.com/anthropics/claude-cookbooks</a>       │ Claude           │
+│                                                      │ Cookbooks        │
+├──────────────────────────────────────────────────────┼──────────────────┤
+│ <a href="https://github.com/datawhalechina/hello-agents.git" target="_blank" rel="noopener noreferrer">https://github.com/datawhalechina/hello-agents.git</a>   │ 中文 Agent       │
+│                                                      │ 入门教程         │
+├──────────────────────────────────────────────────────┼──────────────────┤
+│ <a href="https://github.com/anthropics/anthropic-sdk-python" target="_blank" rel="noopener noreferrer">https://github.com/anthropics/anthropic-sdk-python</a>   │ Claude Python    │
+│                                                      │ SDK              │
+├──────────────────────────────────────────────────────┼──────────────────┤
+│                                                      │ Claude           │
+│ <a href="https://github.com/anthropics/anthropic-sdk-js" target="_blank" rel="noopener noreferrer">https://github.com/anthropics/anthropic-sdk-js</a>       │ TypeScript/JS    │
+│                                                      │ SDK              │
+├──────────────────────────────────────────────────────┼──────────────────┤
+│                                                      │ 官方示例（Tool   │
+│ <a href="https://github.com/anthropics/anthropic-cookbook" target="_blank" rel="noopener noreferrer">https://github.com/anthropics/anthropic-cookbook</a>     │ Use、Vision、Cac │
+│                                                      │ hing 等）        │
+├──────────────────────────────────────────────────────┼──────────────────┤
+│ <a href="https://github.com/QwenLM/qwen-code" target="_blank" rel="noopener noreferrer">https://github.com/QwenLM/qwen-code</a>                  │ Qwen Code CLI    │
+│                                                      │ Agent            │
+├──────────────────────────────────────────────────────┼──────────────────┤
+│ <a href="https://github.com/QwenLM/Qwen-Agent" target="_blank" rel="noopener noreferrer">https://github.com/QwenLM/Qwen-Agent</a>                 │ Qwen Agent 框架  │
+├──────────────────────────────────────────────────────┼──────────────────┤
+│ <a href="https://github.com/modelcontextprotocol/typescript-s" target="_blank" rel="noopener noreferrer">https://github.com/modelcontextprotocol/typescript-s</a> │ MCP TypeScript   │
+│ dk                                                   │ SDK              │
+├──────────────────────────────────────────────────────┼──────────────────┤
+│ <a href="https://github.com/modelcontextprotocol/python-sdk" target="_blank" rel="noopener noreferrer">https://github.com/modelcontextprotocol/python-sdk</a>   │ MCP Python SDK   │
+├──────────────────────────────────────────────────────┼──────────────────┤
+│ <a href="https://github.com/modelcontextprotocol/servers" target="_blank" rel="noopener noreferrer">https://github.com/modelcontextprotocol/servers</a>      │ MCP 官方 Server  │
+│                                                      │ 示例集           │
+├──────────────────────────────────────────────────────┼──────────────────┤
+│ <a href="https://github.com/HKUDS/OpenHarness" target="_blank" rel="noopener noreferrer">https://github.com/HKUDS/OpenHarness</a>                 │ OpenHarness      │
+│                                                      │ 框架（14.6k ★）  │
+├──────────────────────────────────────────────────────┼──────────────────┤
+│ <a href="https://github.com/YennNing/Awesome-Code-as-Agent-Ha" target="_blank" rel="noopener noreferrer">https://github.com/YennNing/Awesome-Code-as-Agent-Ha</a> │ Code as Agent    │
+│ rness-Papers                                         │ Harness 论文集   │
+└──────────────────────────────────────────────────────┴──────────────────┘</code></pre>
+<div class="rule"></div>
+</section>
+<section class="doc-section accent-4" id="推荐学习路径">
+<div class="section-kicker">Section 12</div>
+<h2>推荐学习路径</h2>
+<pre class="ascii-block"><code>系统编程基础 → Node.js 异步模型 → TypeScript 类型系统
+           ↓</code></pre>
+<p>      MCP 协议规范（架构 + 传输 + 工具原语）</p>
+<pre class="ascii-block"><code>           ↓
+   agentskills 规范 → SKILL.md 格式 → npx skills init / skill-creator
+           ↓
+   Claude Code CLI（用户视角 → Hooks → Skills → 自定义 MCP Server）
+           ↓
+   Claude Agent SDK（编程控制 Agent → 多 Agent 系统）
+           ↓</code></pre>
+<p>     Qwen Code（对比阿里生态，多 Provider 策略）</p>
+<pre class="ascii-block"><code>           ↓</code></pre>
+<p>   Lil&#39;Log（学术理论：Agent 架构 / Harness / 对齐）</p>
+<pre class="ascii-block"><code>           ↓</code></pre>
+<p>    OpenHarness（生产级开源实现，对照理论验证工程细节）</p>
+<pre class="ascii-block"><code>           ↓</code></pre>
+<p>    生产部署：CI/CD Hooks + Headless 模式 + Gateway 配置</p>
+<div class="rule"></div>
+<p>整理日期：2026-07-08 | 全部链接均为官方一手资料</p>
+</section>
+        <div class="footer">Generated from docs.md at 2026-07-08 11:59 · Output: AI_AGENT_docs.md / AI_AGENT_docs.html</div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const search = document.getElementById('doc-search');
+    const sections = Array.from(document.querySelectorAll('.doc-section'));
+    const navLinks = Array.from(document.querySelectorAll('#toc a'));
+
+    search.addEventListener('input', () => {
+      const query = search.value.trim().toLowerCase();
+      sections.forEach((section, index) => {
+        const match = !query || section.textContent.toLowerCase().includes(query);
+        section.classList.toggle('is-hidden', !match);
+        if (navLinks[index]) navLinks[index].classList.toggle('is-hidden', !match);
+      });
+    });
+  </script>
+</body>
+</html>
