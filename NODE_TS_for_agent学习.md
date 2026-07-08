@@ -344,3 +344,358 @@ Agent 写 agent 时最典型的场景：AI 给你一段 50 行的改动，你要
 > **但"判断力"只能靠"写过然后被坑过"来获得** —— 这就是那不可省略的 10%。
 
 **把学习时间从"1000 小时手写练习"压到"1–2 周手写 + 后续全靠 AI 结对"**，这是可行的、且已经是当前顶级 agent 开发者的实际做法。
+
+
+
+
+
+
+
+# 补：Zod 和 Bun 的必备知识
+
+---
+
+## 一、Zod —— Agent 时代事实上的"类型 + 校验"标准
+
+### 为什么它对 code agent 是**必学**
+
+Agent 里最典型的场景：**LLM 返回一段 JSON，你要能安全用**。三个层面它同时解决：
+
+1. **运行时校验**：LLM 返回的 JSON 是不是符合预期结构？
+2. **TypeScript 类型**：一次定义 schema，`z.infer` 自动生成 TS 类型
+3. **给 LLM 的 prompt**：schema 可以转成 JSON Schema 喂给 tool-use API
+
+**一个 schema 定义，同时是"校验器 + 类型 + prompt"三件套** —— 这是 Zod 在 agent 场景无可替代的核心价值。
+
+---
+
+### Zod 60 分钟入门（按 code agent 用法排序）
+
+#### 1. 基础原语
+
+```ts
+import { z } from "zod"
+
+const s = z.string()            // 字符串
+const n = z.number()            // 数字
+const b = z.boolean()           // 布尔
+const l = z.literal("apple")    // 字面量
+const e = z.enum(["a","b","c"]) // 枚举
+```
+
+**校验方式**：
+```ts
+s.parse("hello")        // 通过，返回 "hello"
+s.parse(123)            // 抛 ZodError
+s.safeParse(123)        // { success: false, error: ... }  ← agent 里必用这个
+```
+
+**Agent 里 90% 用 `safeParse`**，因为你不希望 LLM 返回一次坏 JSON 就崩掉整个 workflow。
+
+#### 2. 对象 —— Tool schema 的主力
+
+```ts
+const FileEditSchema = z.object({
+  path: z.string(),
+  content: z.string(),
+  line_range: z.tuple([z.number(), z.number()]).optional(),
+})
+
+type FileEdit = z.infer<typeof FileEditSchema>
+// ↑ TS 自动推导出：{ path: string; content: string; line_range?: [number, number] }
+```
+
+**这个 `z.infer` 是全套体系的核心**：写一遍 schema，运行时校验和编译时类型同时得到。
+
+#### 3. 组合子（agent 用得极频繁）
+
+```ts
+z.array(z.string())              // 数组
+z.record(z.string(), z.number()) // { [key: string]: number }
+z.union([z.string(), z.number()])// string | number
+z.discriminatedUnion("type", [   // 消息 role 那种带 tag 的联合
+  z.object({ type: z.literal("user"), text: z.string() }),
+  z.object({ type: z.literal("tool"), tool_name: z.string() }),
+])
+```
+
+`discriminatedUnion` 特别重要 —— Agent 消息、事件流几乎都是这个模式。
+
+#### 4. Agent 场景的高价值 API
+
+```ts
+.optional()      // 可选字段
+.nullable()      // 允许 null
+.default(x)      // 缺省值
+.describe("...") // ★ 给 LLM 看的字段说明（会进 JSON Schema）
+.strict()        // ★ 拒绝多余字段（防止 LLM 幻觉出不存在的字段）
+.transform(fn)   // 解析后再变换
+.refine(fn)      // 自定义业务规则校验
+```
+
+**`.describe()` 是 agent 专属魔法**：
+
+```ts
+const Schema = z.object({
+  city: z.string().describe("The city name in English"),
+  units: z.enum(["celsius", "fahrenheit"]).describe("Temperature unit"),
+})
+```
+
+转成 JSON Schema 后，`description` 字段直接进入 LLM 的 tool 定义 —— **描述写得好 = tool call 成功率高**。
+
+#### 5. Anthropic SDK 里的实战用法
+
+```ts
+import Anthropic from "@anthropic-ai/sdk"
+import { z } from "zod"
+
+const WeatherInput = z.object({
+  city: z.string().describe("City name"),
+  units: z.enum(["c","f"]).default("c"),
+}).strict()
+
+const tools = [{
+  name: "get_weather",
+  description: "Get current weather",
+  input_schema: z.toJSONSchema(WeatherInput),  // ★ zod → JSON Schema
+}]
+
+// LLM 返回后：
+const result = WeatherInput.safeParse(toolUse.input)
+if (!result.success) {
+  // 把 error 反馈给 LLM 让它重来
+  return { role: "tool", content: `Invalid input: ${result.error.message}` }
+}
+// result.data 是强类型的 { city: string; units: "c"|"f" }
+```
+
+**这段模式你在每个 agent 项目里都会写十遍以上**。
+
+#### 6. 高频陷阱
+
+| 坑                                 | 症状                       | 解法                                 |
+| ---------------------------------- | -------------------------- | ------------------------------------ |
+| 忘了 `.strict()`                   | LLM 幻想的字段被静默接受   | 顶层 object 都加 `.strict()`         |
+| 用 `parse` 不用 `safeParse`        | LLM 出错就崩全流程         | Agent 里默认 `safeParse`             |
+| Schema 里没 `.describe()`          | LLM tool-call 参数经常错位 | 每个非平凡字段都加                   |
+| `z.any()` / `z.unknown()` 逃避类型 | 相当于没校验               | 逼自己写具体 schema                  |
+| `z.date()` 遇到 JSON 字符串        | 校验失败                   | 用 `z.coerce.date()` 或 `.transform` |
+
+---
+
+### Zod v4（现在 2026 年 7 月）的新东西
+
+从 v3 → v4 主要变化（你需要知道）：
+
+- **性能大幅提升**（据官方 2–7 倍）
+- `z.toJSONSchema()` 现在是**内置的**（v3 要靠 `zod-to-json-schema` 三方库）
+- **Discriminated union 类型推导更准**
+- **更好的 tree-shaking**
+
+**装的时候直接 `npm i zod` 拿 v4**。旧文档如果用 `zodToJsonSchema` 三方包，是 v3 时代的，改成内置 `z.toJSONSchema()` 即可。
+
+---
+
+### Zod vs 竞品（30 秒过一遍就好）
+
+| 库        | 定位                             | 用不用                   |
+| --------- | -------------------------------- | ------------------------ |
+| **Zod**   | 类型 + 运行时 + JSON Schema 一体 | **首选**                 |
+| Valibot   | 更轻量、tree-shake 友好          | 极限体积场景可选         |
+| ArkType   | 语法接近 TS 类型                 | 尝鲜可以，生态不如 Zod   |
+| io-ts     | 函数式风格                       | 老项目会遇到，新项目别选 |
+| Yup / Joi | Node 时代老将                    | 已过时，别用             |
+
+**结论：agent 项目直接 Zod，无脑选**。
+
+---
+
+## 二、Bun —— 是否值得换掉 Node？
+
+### Bun 是什么
+
+一个"**替代 Node/npm/tsx/esbuild/vitest 的一体化 JS runtime**"：
+
+- 用 Zig 写的运行时（不用 V8，用 JavaScriptCore）
+- 内置 TS 支持（`bun run script.ts` 直接跑）
+- 内置包管理器（`bun install` 比 npm 快 10–30 倍）
+- 内置打包器（`bun build`）
+- 内置测试跑 runner（`bun test`）
+- 内置 HTTP server（`Bun.serve`）
+- 内置 SQLite（`bun:sqlite`）
+- 内置 shell（`Bun.$`）
+
+**一句话：把 Node + npm + tsx + esbuild + vitest 打包成一个二进制**。
+
+---
+
+### 对 code agent 开发者的实际影响
+
+#### ✅ 明确好处
+
+| 好处                      | 说明                                                           |
+| ------------------------- | -------------------------------------------------------------- |
+| **原生跑 TS/TSX**         | `bun script.ts` 无需 tsx / ts-node / 编译；开发迭代快          |
+| **`bun install` 快**      | 大项目从 30s → 3s                                              |
+| **`bun build --compile`** | 直接把 agent 打包成**单一二进制**分发，无需 Node 环境          |
+| **`Bun.$` shell**         | Agent 里执行 shell 更符合直觉：`` await Bun.$`git status` ``   |
+| **启动快**                | Bun 冷启动 ~10ms，Node ~50ms —— 在 hook / CLI 短脚本里差别明显 |
+| **内置 test**             | 不用装 vitest/jest                                             |
+| **`Bun.file()` API**      | 比 `fs/promises` 简洁：`await Bun.file("x.json").json()`       |
+
+#### ⚠️ 需要小心
+
+| 风险                                              | 说明                                                                                                   |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **兼容性偶发问题**                                | 99% 的 npm 包能跑，但**某些用 Node native API 的包**会踩坑（如某些 native binding、`node-gyp` 编译包） |
+| **Claude Code / Cursor Workflow runtime 是 Node** | 你写的 workflow 脚本仍然在 **Node V8 里跑**，Bun 帮不上                                                |
+| **生态相对新**                                    | 遇到 bug 时社区答案比 Node 少一个数量级                                                                |
+| **windows 支持仍在追赶**                          | 好了很多但不如 Linux/macOS                                                                             |
+| **和 `@anthropic-ai/sdk` 完全兼容**               | ✅ 没问题（这个我可以确认）                                                                            |
+| **和 MCP TypeScript SDK 兼容**                    | ✅ 基本 OK，但 stdio transport 极偶发问题被人报过                                                      |
+
+---
+
+### 什么时候用 Bun，什么时候留在 Node
+
+#### 用 Bun ✅
+
+- 从零起一个**独立的 CLI agent** 项目
+- 需要打包成**单二进制分发**（Bun 这里比 Node 的 `pkg` 好）
+- 开发迭代速度敏感（`bun run` vs `tsx` 差别可感）
+- 短脚本 / hook / statusline（启动时间敏感）
+- 学习成本可接受（几乎就是 Node，多学 5 个 API）
+
+#### 留在 Node ⚠️
+
+- **写 Claude Code workflow 脚本** —— runtime 是 Node，你的选择被锁死
+- **写 Claude Code plugin / MCP server 给他人用** —— 别人机器上是 Node，你的包必须 Node 兼容
+- **依赖某些 native binding 密集的库**（`sharp`、某些数据库驱动、`node-gyp` 密集）
+- **企业项目部署环境固定是 Node**
+- **需要 Node 的 domain-specific 库**（如 tree-sitter Node 绑定，Bun 有替代但成熟度差）
+
+---
+
+### Bun 60 分钟入门（只学 agent 相关的）
+
+#### 安装
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
+
+#### 三个新 API 值得记
+
+**① 文件 IO 极简**
+```ts
+const data = await Bun.file("config.json").json()
+await Bun.write("out.txt", "hello")
+```
+
+**② Shell 融进语法**
+```ts
+import { $ } from "bun"
+const branch = await $`git branch --show-current`.text()
+await $`npm run build`  // 直接执行
+```
+Agent 执行 shell 命令时**比 `child_process.spawn` 简洁 5 倍**。
+
+**③ HTTP server（0 依赖）**
+```ts
+Bun.serve({
+  port: 3000,
+  fetch(req) {
+    return new Response("hi")
+  },
+})
+```
+如果你要给 agent 加一个 HTTP 网关，**不用 express/fastify/hono**。
+
+#### 三个命令覆盖 90% 用法
+
+```bash
+bun install                    # 装依赖，快
+bun run src/agent.ts           # 直接跑 TS
+bun build src/index.ts --compile --outfile agent  # 单二进制
+```
+
+#### 和 Node 100% 兼容的部分
+
+- `import fs from "fs/promises"` ✅
+- `import path from "path"` ✅
+- `process.env` / `process.argv` ✅
+- `fetch` / `Response` / `URL` ✅（Node 也有了）
+- `@anthropic-ai/sdk` / `zod` ✅
+
+**基本上"Node 代码几乎不用改，直接 `bun run` 跑"**。
+
+---
+
+### 一个务实的选择矩阵
+
+| 场景                              | 推荐                                          |
+| --------------------------------- | --------------------------------------------- |
+| 学 TS + Agent SDK，初学者         | **Node + tsx** —— 材料多、遇坑好搜答案        |
+| 自己的独立 agent CLI 项目         | **Bun** —— 开发爽、打包容易                   |
+| Claude Code workflow / MCP server | **Node**（被 runtime 锁定）                   |
+| 写给他人用的 npm 包               | **Node**（发布兼容性）                        |
+| 端侧/资源受限环境部署             | **Bun `--compile`**（单二进制、无运行时依赖） |
+| 大型项目 monorepo                 | **Node + pnpm**（生态、tooling 更成熟）       |
+
+---
+
+## 补充到之前的学习路线
+
+在原来的 Tier 里加两条：
+
+**Tier 1 · MANDATORY 追加**
+- ✅ **Zod 基础**（`z.object` / `.parse` / `safeParse` / `z.infer` / `.describe` / `.strict`）—— 每个 agent 项目都要用
+
+**Tier 2 · HIGH-PRIORITY 追加**
+- ✅ **Bun 基础三命令**（`bun install` / `bun run` / `bun build --compile`）—— 至少会用来开发和分发
+
+**Tier 3 · OPTIONAL 追加**
+- ⚪ Bun 的 `Bun.$` shell、`Bun.serve`、`Bun.file` API
+- ⚪ Zod 高级：`discriminatedUnion` 、`transform` 、`refine`、自定义 error map
+
+---
+
+## 最后：直接给你一个"能立刻用"的最小 agent 模板
+
+```ts
+// agent.ts —— 用 bun 跑：bun run agent.ts
+import Anthropic from "@anthropic-ai/sdk"
+import { z } from "zod"
+
+const ReadFileInput = z.object({
+  path: z.string().describe("Absolute file path"),
+}).strict()
+
+const tools = [{
+  name: "read_file",
+  description: "Read a file's contents",
+  input_schema: z.toJSONSchema(ReadFileInput),
+}]
+
+const client = new Anthropic()
+const msg = await client.messages.create({
+  model: "claude-opus-4-7",
+  max_tokens: 1024,
+  tools,
+  messages: [{ role: "user", content: "Read /tmp/hello.txt" }],
+})
+
+for (const block of msg.content) {
+  if (block.type === "tool_use" && block.name === "read_file") {
+    const parsed = ReadFileInput.safeParse(block.input)
+    if (!parsed.success) {
+      console.error("Bad tool input", parsed.error)
+      continue
+    }
+    const content = await Bun.file(parsed.data.path).text()
+    console.log("Tool result:", content)
+  }
+}
+```
+
+**16 行代码，Zod + Bun + Anthropic SDK 全在里面**。你把它跑通，Zod 和 Bun 的入门就完成了。
