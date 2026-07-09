@@ -14,6 +14,8 @@
 | 5 | PatrickJS/awesome-cursorrules | ⭐ 40.3k | Cursor 规则精选合集 | https://github.com/PatrickJS/awesome-cursorrules |
 | 6 | agentskills/agentskills | ⭐ 22.7k | 官方 Skill 格式标准规范 | https://github.com/agentskills/agentskills |
 | 7 | anthropics/claude-code-action | ⭐ 8.3k | GitHub Actions 集成 | https://github.com/anthropics/claude-code-action |
+| 大类 A | karpathy/autoresearch | — | Autonomous Research / 自动实验循环 | https://github.com/karpathy/autoresearch |
+| 大类 B | multica-ai/andrej-karpathy-skills | — | Karpathy-style Agent Discipline / Agent 行为准则 | https://github.com/multica-ai/andrej-karpathy-skills |
 
 ---
 
@@ -205,3 +207,111 @@ Runtime 层 (按需加载)    ← scripts/, references/ 重资产
 ---
 
 *数据来源：GitHub 实时页面验证（2026-07-09）*
+
+---
+
+## `/goal` 最佳实践：把 Agent 从“执行指令”升级为“达成可验证目标”
+
+> 更新日期：2026-07-09
+> 参考来源：OpenAI Codex Goal 官方文档 / Cookbook、multica-ai/andrej-karpathy-skills、karpathy/autoresearch。知乎链接 `https://zhuanlan.zhihu.com/p/2035288538678288989` 当前访问返回 403，未将其不可验证内容写入结论。
+
+### 核心结论
+
+`/goal` 不是“让 Agent 无限自动跑”，而是给当前线程绑定一个**可验证的完成契约**：目标是什么、用什么证据证明完成、哪些约束不能破坏、失败或受阻时如何停止并汇报。
+
+一句话模板：
+
+```text
+/goal 达成 <明确终态>，由 <测试/基准/日志/产物/报告> 验证，同时保持 <不可破坏约束>。
+仅使用 <允许的文件/工具/数据/边界>。每轮迭代记录 <变更、证据、下一步>。
+如果无法验证或没有合理路径，停止并报告 <尝试过什么、证据、阻塞点、需要的输入>。
+```
+
+### 何时适合用 `/goal`
+
+| 适合使用 | 不适合使用 |
+|---|---|
+| 任务需要多轮尝试，且下一步取决于刚刚跑出来的证据 | 一行修改、简单解释、短代码审查 |
+| 有明确成功条件：测试通过、指标达标、产物生成、报告完成 | “让它更好”“优化一下”这类没有完成标准的目标 |
+| 可以形成验证循环：改代码 -> 跑检查 -> 看证据 -> 决定继续/完成/停止 | 互不相关的任务清单 |
+| 迁移、性能优化、flaky test、bug 复现、提示词/eval 优化、研究复现 | 没有数据、没有命令、没有可检查产物的开放式探索 |
+
+### 强目标的六个要素
+
+1. **Outcome（终态）**：完成后世界应该是什么样。
+2. **Verification surface（验证面）**：用哪个测试、benchmark、日志、截图、构建产物或报告证明。
+3. **Constraints（约束）**：哪些行为、API、视觉、性能、兼容性、安全要求不能回退。
+4. **Boundaries（边界）**：允许改哪些文件、用哪些工具、读哪些数据，哪些东西禁止改。
+5. **Iteration policy（迭代策略）**：每轮失败后如何选择下一步，是否要保持改动最小、记录 checkpoint。
+6. **Blocked stop condition（阻塞停止条件）**：什么时候不能继续猜，必须停下来汇报证据和下一步需要什么。
+
+### 弱目标 vs 强目标
+
+| 弱目标 | 强目标 |
+|---|---|
+| `/goal Improve performance` | `/goal Reduce checkout p95 latency below 120 ms, verified by the checkout benchmark, while keeping the correctness suite green. Keep edits scoped to checkout service and related tests. After each run, record the change, benchmark result, and next experiment. If the benchmark cannot run or no valid path remains, stop with evidence and blockers.` |
+| `/goal Fix flaky test` | `/goal Reproduce and fix the flaky checkout test. Verify by running the target test 20 times locally and the related suite once. Do not weaken assertions or skip the test. If reproduction fails, stop with commands run, logs observed, and the most likely missing signal.` |
+| `/goal Write docs` | `/goal Produce a docs page for this feature covering lifecycle, command surface, and two examples. Verify the docs build locally and all referenced commands match current behavior.` |
+| `/goal Reproduce this paper` | `/goal Produce the strongest evidence-backed reproduction using available materials. Build a claim inventory, attempt feasible headline results, and end with a report separating confirmed mechanics, approximate reconstructions, blocked claims, and remaining uncertainty.` |
+
+### 与 Karpathy 风格 Skill 的对应关系
+
+multica-ai/andrej-karpathy-skills 的有效原型可以压缩成四条工程纪律：
+
+- **Think Before Coding**：先暴露假设、歧义、取舍；不确定时问清楚。
+- **Simplicity First**：最少代码解决问题，不加未要求的抽象和配置。
+- **Surgical Changes**：只改和目标直接相关的行，不顺手重构无关代码。
+- **Goal-Driven Execution**：把“做某事”改写成“达成可验证结果”，并循环到证据满足。
+
+把这些放进 `/goal` 时，目标应尽量写成“成功标准 + 验证命令 + 改动边界”，而不是写成一长串操作步骤。这样 Agent 可以自主选择下一步，但不能绕过完成标准。
+
+### 与 `karpathy/autoresearch` 的对应关系
+
+`autoresearch` 是 `/goal` 思想的极简研究原型：
+
+- 人主要编辑 `program.md`，也就是“研究组织代码”。
+- Agent 只改 `train.py`，范围极窄，diff 可审查。
+- 每个实验固定 5 分钟训练预算，避免用更长训练时间伪造进步。
+- 唯一核心指标是 `val_bpb`，更低才算改进。
+- 改动后运行实验，读取日志；指标变好就保留 commit，变差或崩溃就记录并丢弃。
+- `results.tsv` 记录所有尝试，避免只保留成功叙事。
+
+这给 `/goal` 的启发是：**优秀目标要有不可篡改的评估面、固定预算、清晰保留/丢弃规则、完整实验日志**。
+
+### 推荐工作流
+
+1. **先用 `/plan` 收敛目标**：当目标模糊时，让 Codex 先访谈你，生成候选 `/goal`。
+2. **把长背景放文件里**：`/goal` 目标最长应保持精炼；长需求、设计稿、论文、benchmark 说明放 `PLAN.md`、`program.md` 或 issue 链接。
+3. **启动目标**：`/goal <objective>`。
+4. **用检查点监督，而非微操**：状态更新应包含当前 checkpoint、已验证证据、剩余工作、是否阻塞。
+5. **跑偏时改目标，不要堆提示**：如果报告变模糊，补充验证面、边界或停止条件。
+6. **结束时审计证据**：不要只看 Agent 说“完成”，要看测试、日志、benchmark、截图、报告或 diff。
+
+### Codex 命令速查
+
+```text
+/goal <objective>   设置目标
+/goal               查看当前目标
+/goal pause         暂停目标
+/goal resume        恢复目标
+/goal clear         清除目标
+```
+
+如果命令列表里没有 `/goal`，可在 `config.toml` 中启用：
+
+```toml
+[features]
+goals = true
+```
+
+或运行：
+
+```bash
+codex features enable goals
+```
+
+### 最佳 `/goal` 示例
+
+```text
+/goal Implement PLAN.md into a working first version. Verify each milestone with the listed tests or Playwright checks. Keep changes scoped to the files named in PLAN.md unless a dependency is clearly required. After each checkpoint, record what changed, what passed, what failed, and the next smallest useful step. Stop only when all acceptance criteria pass, or when blocked with evidence and the exact input needed.
+```

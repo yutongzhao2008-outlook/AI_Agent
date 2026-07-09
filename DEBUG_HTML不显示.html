@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DEBUG: GitHub 上 HTML 不显示</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --surface: #ffffff;
+      --ink: #172033;
+      --muted: #5f6c80;
+      --line: #d9e0ea;
+      --blue: #185abc;
+      --code-bg: #111827;
+      --code-text: #e5e7eb;
+      --shadow: 0 12px 32px rgba(23, 32, 51, 0.08);
+      --radius: 8px;
+      --font: Aptos, "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
+      --mono: "Cascadia Code", Consolas, "SFMono-Regular", monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font);
+      color: var(--ink);
+      background: linear-gradient(180deg, #eef3f8 0, var(--bg) 320px);
+      letter-spacing: 0;
+    }
+
+    main {
+      width: min(960px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 40px 0 56px;
+    }
+
+    .back {
+      display: inline-flex;
+      margin-bottom: 18px;
+      color: var(--blue);
+      font-weight: 650;
+      text-decoration: none;
+    }
+
+    .back:hover { text-decoration: underline; }
+
+    article {
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    h1 {
+      margin: 0 0 18px;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 30px 0 10px;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+
+    p, li {
+      color: var(--ink);
+      line-height: 1.75;
+    }
+
+    p {
+      margin: 0 0 14px;
+    }
+
+    ul, ol {
+      margin: 0 0 16px;
+      padding-left: 24px;
+    }
+
+    code {
+      font-family: var(--mono);
+      font-size: 0.95em;
+    }
+
+    pre {
+      margin: 14px 0 18px;
+      padding: 14px 16px;
+      overflow: auto;
+      border-radius: var(--radius);
+      background: var(--code-bg);
+      color: var(--code-text);
+      line-height: 1.6;
+    }
+
+    pre code {
+      color: inherit;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <a class="back" href="index.html">返回 HTML 索引</a>
+    <article>
+      <h1>DEBUG: GitHub 上 HTML 不显示</h1>
+
+      <h2>问题</h2>
+      <p><code>AI_AGENT_docs.html</code> 在 GitHub 仓库页面里用浏览器打开时没有网页效果，通常是因为打开的是 GitHub 的文件源码预览页面，而不是 GitHub Pages 的网页托管地址。</p>
+      <p>例如，下面这种地址只是仓库文件查看器：</p>
+      <pre><code>https://github.com/&lt;user&gt;/&lt;repo&gt;/blob/main/AI_AGENT_docs.html</code></pre>
+      <p>在这个页面里，GitHub 会把 HTML 当作仓库文件展示，不会按你自己的网页入口来发布站点。</p>
+
+      <h2>根因</h2>
+      <p>本仓库里的 <code>AI_AGENT_docs.html</code> 是单文件 HTML，CSS 和 JavaScript 都写在文件内部，不依赖外部 JS/CSS 资源。问题不是资源没有上传，而是访问方式不对。</p>
+      <p>另外，如果仓库根目录没有合适的 <code>index.html</code>，即使启用了 GitHub Pages，访问 Pages 根地址时也没有一个清晰的默认入口。</p>
+
+      <h2>解决方案</h2>
+      <ol>
+        <li>在仓库根目录保留 <code>index.html</code>。</li>
+        <li>让 <code>index.html</code> 作为入口页，列出当前目录和递归子目录里的所有 HTML 文件。</li>
+        <li>在仓库根目录保留 <code>.nojekyll</code>，让 GitHub Pages 按纯静态文件发布。</li>
+        <li>到 GitHub 仓库设置中启用 Pages：<code>Settings</code> -> <code>Pages</code> -> <code>Build and deployment</code> -> <code>Deploy from a branch</code>，Branch 选择 <code>main</code>，Folder 选择 <code>/root</code>。</li>
+        <li>保存后等待 Pages 发布完成。</li>
+      </ol>
+
+      <p>发布后访问：</p>
+      <pre><code>https://&lt;user&gt;.github.io/&lt;repo&gt;/</code></pre>
+      <p>或直接访问：</p>
+      <pre><code>https://&lt;user&gt;.github.io/&lt;repo&gt;/AI_AGENT_docs.html</code></pre>
+      <p>当前仓库对应的 Pages 地址应为：</p>
+      <pre><code>https://yutongzhao2008-outlook.github.io/AI_Agent/</code></pre>
+
+      <h2>本次更新</h2>
+      <ul>
+        <li>新增 <code>DEBUG_HTML不显示.md</code> 保存排查说明。</li>
+        <li>新增/更新 <code>DEBUG_HTML不显示.html</code> 保存同样内容的网页版本。</li>
+        <li>更新 <code>index.html</code>，作为当前目录及递归子目录所有 HTML 文件的入口索引。</li>
+        <li>保留 <code>.nojekyll</code>，用于 GitHub Pages 静态发布。</li>
+      </ul>
+
+      <p class="muted">整理日期：2026-07-09</p>
+    </article>
+  </main>
+</body>
+</html>

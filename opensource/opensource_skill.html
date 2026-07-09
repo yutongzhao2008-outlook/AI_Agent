@@ -371,6 +371,22 @@
           <td>v1.0</td>
           <td><a href="https://github.com/anthropics/claude-code-action" target="_blank">GitHub →</a></td>
         </tr>
+        <tr>
+          <td><span class="rank-badge rank-n">A</span></td>
+          <td><strong>karpathy/autoresearch</strong></td>
+          <td>—</td>
+          <td><span class="tag">Autonomous Research</span></td>
+          <td>自动实验循环</td>
+          <td><a href="https://github.com/karpathy/autoresearch" target="_blank">GitHub →</a></td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge rank-n">B</span></td>
+          <td><strong>multica-ai/andrej-karpathy-skills</strong></td>
+          <td>—</td>
+          <td><span class="tag">Agent Discipline</span></td>
+          <td>Karpathy-style 行为准则</td>
+          <td><a href="https://github.com/multica-ai/andrej-karpathy-skills" target="_blank">GitHub →</a></td>
+        </tr>
       </tbody>
     </table>
   </section>
@@ -690,6 +706,125 @@
           <div class="guide-need">GitHub CI/CD 集成 Claude</div>
           <div class="guide-pick">→ anthropics/claude-code-action</div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Goal Best Practices -->
+  <section class="method-section">
+    <div class="section-title">/goal 最佳实践：可验证目标驱动</div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title-block">
+          <div class="card-title">核心模型</div>
+          <div class="card-url">把 Agent 从“执行下一条指令”升级为“达成一个可验证完成契约”</div>
+        </div>
+      </div>
+      <div class="card-why">
+        <code>/goal</code> 适合长任务：目标持续挂在线程上，Codex 在每轮之后用测试、日志、benchmark、截图、报告或产物判断是否完成。它不是无限循环，而是“目标、证据、边界、停止条件”的组合。
+      </div>
+      <pre style="white-space: pre-wrap; background:#0d1117; border:1px solid var(--border); border-radius:8px; padding:14px; color:var(--text); font-size:0.84rem; overflow:auto;"><code>/goal 达成 &lt;明确终态&gt;，由 &lt;测试/基准/日志/产物/报告&gt; 验证，同时保持 &lt;不可破坏约束&gt;。
+仅使用 &lt;允许的文件/工具/数据/边界&gt;。每轮迭代记录 &lt;变更、证据、下一步&gt;。
+如果无法验证或没有合理路径，停止并报告 &lt;尝试过什么、证据、阻塞点、需要的输入&gt;。</code></pre>
+    </div>
+
+    <div class="method-grid">
+      <div class="method-card">
+        <div class="method-title">适合使用</div>
+        <div class="method-body">
+          迁移、性能优化、flaky test、bug 复现、提示词/eval 优化、研究复现、多步骤原型。共同点是：目标明确、验证面明确、路径需要多轮探索。
+        </div>
+      </div>
+      <div class="method-card">
+        <div class="method-title">不适合使用</div>
+        <div class="method-body">
+          一行修改、简单解释、短代码审查、互不相关的任务清单，以及“让它更好”“优化一下”这类没有完成标准的开放式请求。
+        </div>
+      </div>
+      <div class="method-card">
+        <div class="method-title">六个要素</div>
+        <div class="method-body">
+          Outcome、Verification surface、Constraints、Boundaries、Iteration policy、Blocked stop condition。缺少验证面或阻塞停止条件的目标最容易跑偏。
+        </div>
+      </div>
+      <div class="method-card">
+        <div class="method-title">监督方式</div>
+        <div class="method-body">
+          用 checkpoint 看当前状态、已验证证据、剩余工作和阻塞点。跑偏时修改目标契约，不要不断追加零散提示。
+        </div>
+      </div>
+    </div>
+
+    <table style="margin-top: 20px;">
+      <thead>
+        <tr>
+          <th>弱目标</th>
+          <th>强目标</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>/goal Improve performance</code></td>
+          <td>降低 checkout p95 到 120 ms 以下，由 checkout benchmark 验证，同时保持 correctness suite 绿色；每轮记录变更、指标和下一步。</td>
+        </tr>
+        <tr>
+          <td><code>/goal Fix flaky test</code></td>
+          <td>复现并修复指定 flaky test，目标测试本地连续 20 次通过，相关 suite 通过；不得跳过测试或削弱断言。</td>
+        </tr>
+        <tr>
+          <td><code>/goal Write docs</code></td>
+          <td>生成覆盖生命周期、命令面和两个示例的文档页；本地构建通过，所有命令与当前 CLI 行为一致。</td>
+        </tr>
+        <tr>
+          <td><code>/goal Reproduce this paper</code></td>
+          <td>建立 claim inventory，尝试可行 headline results，最终报告区分已确认机制、近似复现、阻塞声明和剩余不确定性。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="guide-grid" style="margin-top: 20px;">
+      <div class="guide-item">
+        <div>
+          <div class="guide-need">multica-ai/andrej-karpathy-skills 的有效原型</div>
+          <div class="guide-pick">Think Before Coding + Simplicity First + Surgical Changes + Goal-Driven Execution</div>
+        </div>
+      </div>
+      <div class="guide-item">
+        <div>
+          <div class="guide-need">karpathy/autoresearch 的启发</div>
+          <div class="guide-pick">固定预算、单一指标、窄编辑范围、实验日志、变好保留、变差丢弃</div>
+        </div>
+      </div>
+      <div class="guide-item">
+        <div>
+          <div class="guide-need">推荐工作流</div>
+          <div class="guide-pick">先 /plan 收敛目标，再 /goal 执行；长背景放 PLAN.md 或 program.md</div>
+        </div>
+      </div>
+      <div class="guide-item">
+        <div>
+          <div class="guide-need">命令速查</div>
+          <div class="guide-pick"><code>/goal</code>、<code>/goal pause</code>、<code>/goal resume</code>、<code>/goal clear</code></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 20px;">
+      <div class="card-header">
+        <div class="card-title-block">
+          <div class="card-title">最佳示例</div>
+          <div class="card-url">适合 PLAN.md 驱动的多步骤实现</div>
+        </div>
+      </div>
+      <pre style="white-space: pre-wrap; background:#0d1117; border:1px solid var(--border); border-radius:8px; padding:14px; color:var(--text); font-size:0.84rem; overflow:auto;"><code>/goal Implement PLAN.md into a working first version. Verify each milestone with the listed tests or Playwright checks. Keep changes scoped to the files named in PLAN.md unless a dependency is clearly required. After each checkpoint, record what changed, what passed, what failed, and the next smallest useful step. Stop only when all acceptance criteria pass, or when blocked with evidence and the exact input needed.</code></pre>
+      <div class="card-for">
+        <strong>来源：</strong>
+        <a href="https://developers.openai.com/cookbook/examples/codex/using_goals_in_codex" target="_blank">OpenAI Cookbook</a> ·
+        <a href="https://developers.openai.com/codex/use-cases/follow-goals" target="_blank">OpenAI Follow a goal</a> ·
+        <a href="https://github.com/multica-ai/andrej-karpathy-skills/tree/main" target="_blank">andrej-karpathy-skills</a> ·
+        <a href="https://github.com/karpathy/autoresearch" target="_blank">karpathy/autoresearch</a> ·
+        <span>知乎链接当前访问返回 403，未写入不可验证内容。</span>
       </div>
     </div>
   </section>

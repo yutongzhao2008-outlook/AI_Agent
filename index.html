@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI_Agent HTML Index</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --surface: #ffffff;
+      --ink: #172033;
+      --muted: #5f6c80;
+      --line: #d9e0ea;
+      --blue: #185abc;
+      --green: #087f5b;
+      --shadow: 0 12px 32px rgba(23, 32, 51, 0.08);
+      --radius: 8px;
+      --font: Aptos, "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
+      --mono: "Cascadia Code", Consolas, "SFMono-Regular", monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font);
+      color: var(--ink);
+      background: linear-gradient(180deg, #eef3f8 0, var(--bg) 320px);
+      letter-spacing: 0;
+    }
+
+    main {
+      width: min(1040px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 40px 0 56px;
+    }
+
+    header {
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 5px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .list {
+      display: grid;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .item {
+      display: grid;
+      gap: 6px;
+      padding: 16px 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .item a {
+      color: var(--blue);
+      font-size: 17px;
+      font-weight: 650;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+    }
+
+    .item a:hover { text-decoration: underline; }
+
+    .path {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .current {
+      color: var(--green);
+      font-weight: 650;
+    }
+
+    footer {
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>AI_Agent HTML Index</h1>
+      <p>当前目录及递归子目录下的 HTML 入口索引。发布到 GitHub Pages 后，可从这里打开每个 HTML 页面。</p>
+      <div class="summary" aria-label="索引摘要">
+        <span class="badge">HTML files: 6</span>
+        <span class="badge">Root: AI_Agent</span>
+        <span class="badge">Updated: 2026-07-09</span>
+      </div>
+    </header>
+
+    <section class="list" aria-label="HTML 文件列表">
+      <article class="item">
+        <a href="AI_AGENT_docs.html">AI_AGENT_docs.html</a>
+        <div class="path">./AI_AGENT_docs.html</div>
+      </article>
+
+      <article class="item">
+        <a href="DEBUG_HTML不显示.html">DEBUG_HTML不显示.html</a>
+        <div class="path">./DEBUG_HTML不显示.html</div>
+      </article>
+
+      <article class="item">
+        <a href="index.html">index.html <span class="current">当前入口页</span></a>
+        <div class="path">./index.html</div>
+      </article>
+
+      <article class="item">
+        <a href="exmaples/simple_code_agent/node_modules/sprintf-js/demo/angular.html">angular.html</a>
+        <div class="path">./exmaples/simple_code_agent/node_modules/sprintf-js/demo/angular.html</div>
+      </article>
+
+      <article class="item">
+        <a href="exmaples/simple_code_agent/node_modules/uglify-js/tools/domprops.html">domprops.html</a>
+        <div class="path">./exmaples/simple_code_agent/node_modules/uglify-js/tools/domprops.html</div>
+      </article>
+
+      <article class="item">
+        <a href="opensource/opensource_skill.html">opensource_skill.html</a>
+        <div class="path">./opensource/opensource_skill.html</div>
+      </article>
+    </section>
+
+    <footer>
+      说明：这个索引按当前工作区递归扫描到的 HTML 文件生成，不包含 .git 目录。
+    </footer>
+  </main>
+</body>
+</html>
