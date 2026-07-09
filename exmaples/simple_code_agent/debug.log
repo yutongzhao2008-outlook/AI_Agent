@@ -627,3 +627,8 @@
 2026-07-09T01:15:37.300Z [DEBUG] MCP server "plugin:logtalk:logtalk": No token data found
 2026-07-09T01:15:37.502Z [DEBUG] MCP server "plugin:logtalk:crashanalysis": No token data found
 2026-07-09T01:15:37.507Z [DEBUG] MCP server "plugin:logtalk:skillagent": No token data found
+2026-07-09T01:24:24.263Z [DEBUG] [awaySummary] skipped: cache stale
+2026-07-09T01:25:25.270Z [DEBUG] [awaySummary] skipped: cache stale
+2026-07-09T01:25:50.504Z [DEBUG] [awaySummary] skipped: cache stale
+2026-07-09T01:28:23.423Z [DEBUG] [awaySummary] skipped: cache stale
+2026-07-09T01:38:19.288Z [DEBUG] [awaySummary] skipped: cache stale
